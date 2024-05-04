@@ -1,0 +1,164 @@
+.nav-options{
+    display: flex;
+    justify-content: space-around;
+    background-color: white;
+    width: 80%;
+    text-align: center;
+    
+}
+ul{
+    display: flex;
+    gap: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+ul li{
+    font-size: 20px;
+    
+}
+
+ul li:hover{
+    color: red;
+    background-color: antiquewhite;
+}
+
+
+img{
+    height: 100px;
+}
+
+.menu-right{
+    display: flex;
+}
+
+.icon-close{
+    display: none;
+}
+
+
+@media only screen and (max-width:426px){
+    .icon-close{
+        display: block;
+        margin-right: 20px;
+        margin-top: 10px;
+        font-size: 24px;
+    }
+    
+
+    ul{
+        display: none;
+    }
+
+    ul.open {
+        display: block;
+        margin-left: 20px;
+    }
+
+    ul.open + .logo{
+        display: none;
+    }
+
+    ul li{
+        font-size: 10px;
+    }
+
+    .list-item{
+        padding: 5px;
+        margin-top: 5px;
+        color: rgb(255, 255, 255);
+        border: 0.5px solid red;
+        border-radius: 10px;
+        padding-left: 30px;
+        padding-right: 30px;
+        
+    }
+    .list-item:hover{
+        color: red;
+    }
+
+    .menu-right {
+        justify-content: center; /* Align items to the end of the container */
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        
+    }
+
+    img{
+        height: 30px;
+    }
+    .img-container{
+        margin-left: 20px;
+    }
+    .nav-options{
+        justify-content: space-between;
+        width: 100%;
+        text-align: center;        
+    }
+    .list-item{
+        background-color: rgb(38, 38, 38);
+    }
+}
+
+@media only screen and (min-width: 425px) and (max-width: 768px){
+    
+    
+    ul li{
+        font-size: 12px;
+    }
+    ul li:hover{
+        color: red;
+    }
+    .logo{
+        display: block;
+    }
+    #menu{
+        padding-right: 20px;
+    }
+    #menu-left{
+        padding-left: 20px;
+    }
+   
+}
+@media only screen and (min-width: 769px) and (max-width: 2559px){
+    ul li{
+        font-size: 20px;
+    }
+    ul li:hover{
+        color: red;
+    }
+    .logo{
+        display: block;
+    }
+    #menu{
+        padding-right: 20px;
+    }
+    #menu-left{
+        padding-left: 20px;
+    }
+}
+@media only screen and (min-width: 2560px){
+    ul li{
+        font-size: 40px;
+        margin-right: 70px;
+    }
+    ul li:hover{
+        color: red;
+    }
+    .logo{
+        display: block;
+    }
+    #menu{
+        padding-right: 20px;
+    }
+    #menu-left{
+        padding-left: 70px;
+    }
+    .nav-options{
+        background-color: white;
+        width: 100%;
+        text-align: center;
+        
+    }
+}

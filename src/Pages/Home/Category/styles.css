@@ -1,0 +1,62 @@
+#app {
+    height: 100%;
+  }
+  html,
+  body {
+    position: relative;
+    height: 100%;
+  }
+  
+  body {
+    background: #eee;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #000;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .swiper {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+  
+    /* Center slide text vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+
+
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+    object-fit: cover;
+  }
+  
+  @media screen and (min-width: 1025px){
+    .swiper-slide.pizza-slide {
+      /* Add specific configurations for the pizza slide here */
+      height: 300px; /* Set a fixed height for the pizza slide */
+    }
+    
+    .swiper-slide.pizza-slide img {
+      /* Modify image properties for the pizza slide */
+      /* For example: */
+      max-height: 100%; /* Ensure image doesn't overflow its container */
+    }    
+  }
+
+  @media screen and (max-width: 426px){
+    .swiper-slide{
+      font-size: 10px;
+    }
+    
+  }
