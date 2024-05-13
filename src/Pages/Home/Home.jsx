@@ -4,6 +4,7 @@ import PopularItem from './PopularItem/PopularItem';
 import Category from './Category/Category';
 import SharedBanner from '../../SharedBanner/SharedBanner';
 import ContactNumber from './ContactNumber/ContactNumber';
+import MenuBanner from './MenuBanner/MenuBanner';
 
 const Home = () => {
     return (
@@ -16,6 +17,7 @@ const Home = () => {
             </SharedBanner>
             <PopularItem></PopularItem>
             <ContactNumber></ContactNumber>
+            <MenuBanner></MenuBanner>
         </div>
     );
 };

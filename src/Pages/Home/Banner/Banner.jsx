@@ -16,7 +16,6 @@ const Banner = () => {
     return (
         <div>
           <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
-        <SwiperSlide><img className='' src="https://i.ibb.co/L5mD67j/01.jpg" alt="" /></SwiperSlide>
         <SwiperSlide><img className='' src="https://i.ibb.co/vmgBy8c/pexels-sebastian-coman-photography-1598188-3475617.jpg" alt="" /></SwiperSlide>
         <SwiperSlide><img className='' src="https://i.ibb.co/7jmND6V/pexels-marceloverfe-19524049.jpg" alt="" /></SwiperSlide>
         <SwiperSlide><img className='' src="https://i.ibb.co/tZ0RtHM/pexels-bertellifotografia-13869852.jpg" alt="" /></SwiperSlide>
