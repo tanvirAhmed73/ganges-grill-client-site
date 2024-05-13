@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 
 const instance = axios.create({
-  baseURL: "http://localhost:5000/",
+  baseURL: "https://ganges-grill-server-site.vercel.app/",
 });
 const useAxiosSecure = () => {
-    const navigate = useNavigate()
-    const {logOut} = useAuth()
+  const navigate = useNavigate();
+  const { logOut } = useAuth();
   // request interceptor to add authorization headers for call api
   instance.interceptors.request.use(
     function (config) {
@@ -28,14 +28,14 @@ const useAxiosSecure = () => {
       // Do something with response data
       return response;
     },
-        async (error)=> {
+    async (error) => {
       // Any status codes that falls outside the range of 2xx cause this function to trigger
       // Do something with response error
       const status = error.response.status;
-      console.log(status)
-      if(status === 401 || status === 403){
+      console.log(status);
+      if (status === 401 || status === 403) {
         await logOut();
-        navigate('/login')
+        navigate("/login");
       }
       return Promise.reject(error);
     }
