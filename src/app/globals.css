@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Global defaults align with the Tailwind `brand` palette (see tailwind.config.js).
+ * Component-level DaisyUI classes may still appear during migration; replace them
+ * incrementally with `brand-*` utilities.
+ */
+@layer base {
+  html {
+    /* Smoother iOS: use full dynamic viewport with non-fullscreen modals + notched devices */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply min-h-[100dvh] bg-brand-background text-brand-dark antialiased;
+  }
+}

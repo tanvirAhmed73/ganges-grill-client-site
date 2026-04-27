@@ -1,11 +1,49 @@
+/**
+ * Tailwind configuration — Ganges Grill design system
+ *
+ * CUSTOM COLORS (single source of truth)
+ * Use utility classes like `bg-brand-primary`, `text-brand-muted`.
+ * DaisyUI remains enabled until the redesign is complete; new work should
+ * prefer these `brand-*` tokens over Daisy semantic colors (`primary`, `base-100`, …).
+ *
+ * Token map (design intent):
+ * | Token              | Hex       | Use case                          |
+ * |--------------------|-----------|-----------------------------------|
+ * | brand.primary      | #FF6B35   | CTAs, primary buttons, key links |
+ * | brand.secondary    | #F7C59F   | Cards, highlights, soft accents   |
+ * | brand.background   | #FFF8F3   | Main page / app background        |
+ * | brand.dark         | #1A1A1A   | Primary body and heading text    |
+ * | brand.muted        | #4A4A4A   | Secondary / helper / captions    |
+ */
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/app/**/*.{js,jsx,ts,tsx}",
+    "./src/components/**/*.{js,jsx,ts,tsx}",
+    "./src/contexts/**/*.{js,jsx,ts,tsx}",
+    "./src/providers/**/*.{js,jsx,ts,tsx}",
+    "./src/hooks/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        brand: {
+          /** Primary brand — CTAs, primary buttons, strong accents */
+          primary: "#FF6B35",
+          /** Secondary tint — cards, highlighted surfaces, chips */
+          secondary: "#F7C59F",
+          /** Main canvas — page background (warm off-white) */
+          background: "#FFF8F3",
+          /** Primary text — headings, body emphasis */
+          dark: "#1A1A1A",
+          /** Muted text — captions, meta, de-emphasized copy */
+          muted: "#4A4A4A",
+        },
+      },
+    },
   },
-  plugins: [require("daisyui")],
-}
+  plugins: [
+    // TODO (redesign): remove DaisyUI once all components use Tailwind + brand tokens only
+    require("daisyui"),
+  ],
+};

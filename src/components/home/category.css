@@ -1,0 +1,41 @@
+.category-swiper html,
+.category-swiper body {
+  position: relative;
+  height: 100%;
+}
+
+.category-swiper .swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.category-swiper .swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.category-swiper .swiper-slide img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
+@media screen and (min-width: 1025px) {
+  .swiper-slide.pizza-slide {
+    height: 300px;
+  }
+
+  .swiper-slide.pizza-slide img {
+    max-height: 100%;
+  }
+}
+
+@media screen and (max-width: 426px) {
+  .swiper-slide {
+    font-size: 10px;
+  }
+}
