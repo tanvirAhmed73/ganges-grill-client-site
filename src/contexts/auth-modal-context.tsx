@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Controls the global auth entry modal (social + “Log in” / “Sign up” paths).
- * Open from any client component via useAuthModal().openAuthModal('login' | 'signup').
+ * Global auth modal: login (email → password) and signup entry.
+ * `openAuthModal('login', returnPath?)` sets optional post-login navigation.
  */
 
 import {
@@ -19,7 +19,12 @@ export type AuthModalIntent = "login" | "signup";
 export interface AuthModalContextValue {
   isOpen: boolean;
   intent: AuthModalIntent;
-  openAuthModal: (nextIntent?: AuthModalIntent) => void;
+  /** When set, successful login should navigate here (e.g. private route redirect). */
+  returnAfterLogin: string | null;
+  openAuthModal: (
+    nextIntent?: AuthModalIntent,
+    returnAfterLogin?: string | null
+  ) => void;
   closeAuthModal: () => void;
 }
 
@@ -29,26 +34,36 @@ const AuthModalContext = createContext<AuthModalContextValue | undefined>(
 
 export function AuthModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  /** Which navbar action opened the modal (reserved for future UI emphasis). */
   const [intent, setIntent] = useState<AuthModalIntent>("login");
+  const [returnAfterLogin, setReturnAfterLogin] = useState<string | null>(null);
 
-  const openAuthModal = useCallback((nextIntent: AuthModalIntent = "login") => {
-    setIntent(nextIntent === "signup" ? "signup" : "login");
-    setIsOpen(true);
-  }, []);
+  const openAuthModal = useCallback(
+    (nextIntent: AuthModalIntent = "login", returnTo?: string | null) => {
+      setIntent(nextIntent === "signup" ? "signup" : "login");
+      setReturnAfterLogin(
+        returnTo === undefined || returnTo === null || returnTo === ""
+          ? null
+          : returnTo
+      );
+      setIsOpen(true);
+    },
+    []
+  );
 
   const closeAuthModal = useCallback(() => {
     setIsOpen(false);
+    setReturnAfterLogin(null);
   }, []);
 
   const value = useMemo<AuthModalContextValue>(
     () => ({
       isOpen,
       intent,
+      returnAfterLogin,
       openAuthModal,
       closeAuthModal,
     }),
-    [isOpen, intent, openAuthModal, closeAuthModal]
+    [isOpen, intent, returnAfterLogin, openAuthModal, closeAuthModal]
   );
 
   return (

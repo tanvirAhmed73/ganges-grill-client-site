@@ -5,6 +5,8 @@ import {
   getAuth,
   GoogleAuthProvider,
   onAuthStateChanged,
+  sendPasswordResetEmail,
+  sendSignInLinkToEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -57,6 +59,29 @@ export default function AuthProvider({ children }) {
     return signInWithEmailAndPassword(auth, email, password);
   }, []);
 
+  const sendPasswordReset = useCallback((email) => {
+    const auth = getAuthSafe();
+    if (!auth) {
+      return Promise.reject(new Error("Firebase is not configured"));
+    }
+    return sendPasswordResetEmail(auth, email);
+  }, []);
+
+  const sendEmailSignInLink = useCallback((email) => {
+    const auth = getAuthSafe();
+    if (!auth) {
+      return Promise.reject(new Error("Firebase is not configured"));
+    }
+    if (typeof window === "undefined") {
+      return Promise.reject(new Error("Email link sign-in is client-only"));
+    }
+    const actionCodeSettings = {
+      url: `${window.location.origin}/auth/complete-email-link`,
+      handleCodeInApp: true,
+    };
+    return sendSignInLinkToEmail(auth, email, actionCodeSettings);
+  }, []);
+
   const logOut = useCallback(() => {
     const auth = getAuthSafe();
     if (!auth) {
@@ -93,6 +118,8 @@ export default function AuthProvider({ children }) {
     loading,
     register,
     signIn,
+    sendPasswordReset,
+    sendEmailSignInLink,
     logOut,
     signInWithGoogle,
   };

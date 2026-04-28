@@ -2,7 +2,7 @@
 
 import { useContext, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AuthContext } from "@/providers/AuthProvider";
 import usePublic from "@/hooks/usePublic";
 import Swal from "sweetalert2";
@@ -12,6 +12,8 @@ export default function SignUpForm() {
   const { register } = useContext(AuthContext);
   const [error, setError] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const emailFromQuery = searchParams.get("email") || "";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -74,6 +76,7 @@ export default function SignUpForm() {
                 type="email"
                 name="email"
                 placeholder="Email"
+                defaultValue={emailFromQuery}
                 className="w-full rounded-lg border border-brand-secondary/70 px-3 py-2.5 outline-none ring-brand-primary focus:ring-2"
                 required
               />

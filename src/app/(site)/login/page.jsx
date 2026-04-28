@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import LoginForm from "@/components/auth/LoginForm";
+import LoginPageClient from "./LoginPageClient";
 
 export const metadata = {
   title: "Login",
@@ -16,7 +16,7 @@ function LoginFallback() {
 export default function LoginPage() {
   return (
     <Suspense fallback={<LoginFallback />}>
-      <LoginForm />
+      <LoginPageClient />
     </Suspense>
   );
 }
