@@ -5,6 +5,7 @@ import { useState, type ReactNode } from "react";
 import AuthEntryModal from "@/components/auth/AuthEntryModal";
 import TopPromoBanner from "@/components/layout/top-promo/TopPromoBanner";
 import { AuthModalProvider } from "@/contexts/auth-modal-context";
+import { LocaleProvider } from "@/contexts/locale-context";
 import AuthProvider from "@/providers/AuthProvider";
 import AxiosSecureSetup from "@/providers/AxiosSecureSetup";
 
@@ -13,15 +14,17 @@ export default function AppProviders({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <AuthModalProvider>
-          <AxiosSecureSetup />
-          {/* Anonymous-only promo; must stay inside AuthProvider */}
-          <TopPromoBanner />
-          <AuthEntryModal />
-          {children}
-        </AuthModalProvider>
-      </AuthProvider>
+      <LocaleProvider>
+        <AuthProvider>
+          <AuthModalProvider>
+            <AxiosSecureSetup />
+            {/* Anonymous-only promo; must stay inside AuthProvider */}
+            <TopPromoBanner />
+            <AuthEntryModal />
+            {children}
+          </AuthModalProvider>
+        </AuthProvider>
+      </LocaleProvider>
     </QueryClientProvider>
   );
 }

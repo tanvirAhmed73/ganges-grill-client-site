@@ -27,7 +27,9 @@ import { buildCuisineResults, buildDealResults } from "@/components/home/utils/h
 import CuisineResultsView from "@/components/home/views/CuisineResultsView";
 import DealCampaignView from "@/components/home/views/DealCampaignView";
 
-export default function HomeView() {
+/** @param {{ serviceMode?: 'delivery' | 'pickup' }} props */
+export default function HomeView({ serviceMode = "delivery" }) {
+  const isPickup = serviceMode === "pickup";
   const [selectedCuisine, setSelectedCuisine] = useState(null);
   const [selectedDealTitle, setSelectedDealTitle] = useState(null);
 
@@ -76,10 +78,10 @@ export default function HomeView() {
     <main className="bg-brand-background pb-10">
       <div className="mx-auto max-w-[1340px] px-3 py-5 sm:px-4 lg:px-6 lg:py-8">
         <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)] xl:gap-8">
-          <FilterSidebar />
+          <FilterSidebar serviceMode={serviceMode} />
 
           <div className="min-w-0 space-y-8">
-            <HeroSection />
+            <HeroSection variant={isPickup ? "pickup" : "delivery"} />
 
             <CuisinesSection
               cuisines={cuisines}
@@ -92,6 +94,7 @@ export default function HomeView() {
                 selectedDeal={selectedDeal || dailyDeals[0]}
                 results={dealResults}
                 onResetDeal={onResetDeal}
+                serviceMode={serviceMode}
               />
             ) : selectedCuisine ? (
               <>
@@ -115,10 +118,22 @@ export default function HomeView() {
               <>
                 <DailyDealsSection dailyDeals={dailyDeals} onDealSelect={onDealSelect} />
 
-                <RestaurantRow title="Flat 15% off entire menu" data={featuredRestaurants} />
-                <RestaurantRow title="DEALNAO : Tk 150 off" data={dealNaoRestaurants} />
+                <RestaurantRow
+                  title="Flat 15% off entire menu"
+                  data={featuredRestaurants}
+                  serviceMode={serviceMode}
+                />
+                <RestaurantRow
+                  title="DEALNAO : Tk 150 off"
+                  data={dealNaoRestaurants}
+                  serviceMode={serviceMode}
+                />
                 <TopBrandsSection topBrands={topBrands} />
-                <RestaurantRow title="Fast delivery" data={fastDeliveryRestaurants} />
+                <RestaurantRow
+                  title={isPickup ? "Nearest for pick-up" : "Fast delivery"}
+                  data={fastDeliveryRestaurants}
+                  serviceMode={serviceMode}
+                />
                 <AppPromoCard />
 
                 <section>
@@ -129,6 +144,8 @@ export default function HomeView() {
                         key={`all-${restaurant.name}-${index}`}
                         restaurant={restaurant}
                         className="xl:[&>div:first-child]:h-44"
+                        serviceMode={serviceMode}
+                        listIndex={index}
                       />
                     ))}
                   </div>

@@ -7,9 +7,9 @@ const footerGroups = [
     title: "Discover",
     links: [
       { label: "Home", href: "/" },
-      { label: "All restaurants", href: "/order" },
+      { label: "All restaurants", href: "/" },
       { label: "Our menu", href: "/ourMenu" },
-      { label: "Popular deals", href: "/order" },
+      { label: "Popular deals", href: "/" },
     ],
   },
   {

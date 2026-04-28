@@ -10,11 +10,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import type { IconType } from "react-icons";
-import {
-  AiOutlineHeart,
-  AiOutlineShopping,
-  AiOutlineGlobal,
-} from "react-icons/ai";
+import { AiOutlineHeart, AiOutlineShopping } from "react-icons/ai";
 import {
   MdClose,
   MdDeliveryDining,
@@ -27,6 +23,7 @@ import { FiChevronDown, FiMenu, FiSearch } from "react-icons/fi";
 import { HiOutlineUser } from "react-icons/hi2";
 import Swal from "sweetalert2";
 import { useAuthModal } from "@/contexts/auth-modal-context";
+import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import useAuth from "@/hooks/useAuth";
 import useCart from "@/hooks/useCart";
 
@@ -71,8 +68,8 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const serviceMode = searchParams.get("service");
-  const isPickup = serviceMode === "pickup";
+  const isPickup = searchParams.get("service") === "pickup";
+  const isMarketplaceHome = pathname === "/" || pathname === "/home";
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -214,18 +211,7 @@ export default function Navbar() {
                   </div>
                 </details>
 
-                <details className="group relative hidden sm:block">
-                  <summary className="flex cursor-pointer list-none items-center gap-1 rounded-lg px-2 py-2 text-sm font-semibold text-brand-dark hover:bg-brand-secondary/40 [&::-webkit-details-marker]:hidden">
-                    <AiOutlineGlobal className="text-lg text-brand-muted" />
-                    EN
-                    <FiChevronDown className="text-brand-muted group-open:rotate-180" />
-                  </summary>
-                  <div className="absolute right-0 mt-2 min-w-[140px] rounded-xl border border-black/[0.08] bg-brand-background py-2 shadow-lg ring-1 ring-black/5">
-                    <span className="block px-4 py-2 text-xs text-brand-muted">
-                      More languages soon
-                    </span>
-                  </div>
-                </details>
+                <LanguageSwitcher className="hidden sm:block" />
 
                 <Link
                   href="/ourMenu"
@@ -252,18 +238,7 @@ export default function Navbar() {
                   Sign up for free delivery
                 </button>
 
-                <details className="group relative hidden sm:block">
-                  <summary className="flex cursor-pointer list-none items-center gap-1 rounded-lg px-2 py-2 text-sm font-semibold text-brand-dark hover:bg-brand-secondary/40 [&::-webkit-details-marker]:hidden">
-                    <AiOutlineGlobal className="text-lg text-brand-muted" />
-                    EN
-                    <FiChevronDown className="text-brand-muted group-open:rotate-180" />
-                  </summary>
-                  <div className="absolute right-0 mt-2 min-w-[140px] rounded-xl border border-black/[0.08] bg-brand-background py-2 shadow-lg ring-1 ring-black/5">
-                    <span className="block px-4 py-2 text-xs text-brand-muted">
-                      More languages soon
-                    </span>
-                  </div>
-                </details>
+                <LanguageSwitcher className="hidden sm:block" />
               </>
             )}
 
@@ -302,19 +277,16 @@ export default function Navbar() {
             aria-label="Ordering options"
           >
             <ServiceTab
-              href="/order"
+              href="/"
               label="Delivery"
               icon={MdDeliveryDining}
-              active={
-                pathname.startsWith("/order") &&
-                searchParams.get("service") !== "pickup"
-              }
+              active={isMarketplaceHome && !isPickup}
             />
             <ServiceTab
-              href="/order?service=pickup"
+              href="/?service=pickup"
               label="Pick-up"
               icon={FaWalking}
-              active={pathname.startsWith("/order") && isPickup}
+              active={isMarketplaceHome && isPickup}
             />
             <ServiceTab
               href="/ourMenu"
@@ -415,11 +387,11 @@ export default function Navbar() {
                 Menu
               </Link>
               <Link
-                href="/order"
+                href="/"
                 className="rounded-lg px-3 py-3 font-medium text-brand-dark hover:bg-brand-secondary/40"
                 onClick={() => setMobileOpen(false)}
               >
-                Order / Delivery
+                Restaurants
               </Link>
               <Link
                 href="/dashboard"
@@ -436,6 +408,12 @@ export default function Navbar() {
                 Contact
               </Link>
             </div>
+
+            <LanguageSwitcher
+              variant="inline"
+              className="mt-6 lg:hidden"
+              onNavigate={() => setMobileOpen(false)}
+            />
 
             <div className="mt-8 border-t border-black/[0.08] pt-6">
               {user ? (

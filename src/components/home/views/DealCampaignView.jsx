@@ -2,7 +2,12 @@ import Image from "next/image";
 import { FiArrowLeft } from "react-icons/fi";
 import RestaurantCard from "@/components/home/sections/RestaurantCard";
 
-export default function DealCampaignView({ selectedDeal, results, onResetDeal }) {
+export default function DealCampaignView({
+  selectedDeal,
+  results,
+  onResetDeal,
+  serviceMode = "delivery",
+}) {
   return (
     <section className="space-y-5">
       <div className="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
@@ -39,27 +44,30 @@ export default function DealCampaignView({ selectedDeal, results, onResetDeal })
 
         <div className="border-t border-black/5 px-4 py-3 sm:px-5">
           <div className="flex flex-wrap gap-2">
-            {["Sort: Relevance", "Fastest delivery", "Top rated", "Free delivery"].map(
-              (chip) => (
-                <button
-                  key={chip}
-                  type="button"
-                  className="rounded-full border border-brand-secondary/80 px-3 py-1.5 text-xs font-semibold text-brand-muted transition-colors hover:border-brand-primary hover:text-brand-dark"
-                >
-                  {chip}
-                </button>
-              ),
-            )}
+            {(serviceMode === "pickup"
+              ? ["Sort: Relevance", "Distance", "Top rated", "Deals"]
+              : ["Sort: Relevance", "Fastest delivery", "Top rated", "Free delivery"]
+            ).map((chip) => (
+              <button
+                key={chip}
+                type="button"
+                className="rounded-full border border-brand-secondary/80 px-3 py-1.5 text-xs font-semibold text-brand-muted transition-colors hover:border-brand-primary hover:text-brand-dark"
+              >
+                {chip}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {results.map((restaurant) => (
+        {results.map((restaurant, index) => (
           <RestaurantCard
             key={restaurant.id}
             restaurant={restaurant}
             className="h-full [&>div:first-child]:h-28 sm:[&>div:first-child]:h-32"
+            serviceMode={serviceMode}
+            listIndex={index}
           />
         ))}
       </div>

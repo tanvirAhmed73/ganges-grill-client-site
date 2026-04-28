@@ -5,6 +5,7 @@ export default function CuisineResultsView({
   selectedCuisine,
   results,
   onResetCuisine,
+  serviceMode = "delivery",
 }) {
   return (
     <section className="space-y-5">
@@ -47,11 +48,13 @@ export default function CuisineResultsView({
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {results.map((restaurant) => (
+        {results.map((restaurant, index) => (
           <RestaurantCard
             key={restaurant.id}
             restaurant={restaurant}
             className="h-full [&>div:first-child]:h-32 sm:[&>div:first-child]:h-36"
+            serviceMode={serviceMode}
+            listIndex={index}
           />
         ))}
       </div>
