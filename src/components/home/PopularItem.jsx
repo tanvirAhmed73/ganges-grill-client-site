@@ -17,7 +17,7 @@ export default function PopularItem() {
         ))}
       </div>
       <Link href="/ourMenu">
-        <button className="btn btn-outline mx-auto mt-4 block border-0 border-b-4">
+        <button className="mx-auto mt-4 block rounded-lg border border-brand-primary px-4 py-2 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-primary hover:text-white">
           View Full Menu
         </button>
       </Link>

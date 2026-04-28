@@ -16,7 +16,7 @@ export default function OurMenuView() {
       <Title title={"---Don't Miss---"} subtitle={"TODAY'S OFFER"} />
       <MenuCategory itemCategory={"popular"} />
       <Link href="/order/popular">
-        <button className="btn mx-auto mb-20 block w-3/4">
+        <button className="mx-auto mb-20 block w-3/4 rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white">
           ORDER YOUR FAVOURITE FOOD
         </button>
       </Link>
@@ -30,7 +30,7 @@ export default function OurMenuView() {
       />
       <MenuCategory itemCategory={"dessert"} />
       <Link href="/order/dessert">
-        <button className="btn mx-auto mb-20 block w-3/4">
+        <button className="mx-auto mb-20 block w-3/4 rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white">
           ORDER YOUR FAVOURITE FOOD
         </button>
       </Link>
@@ -44,7 +44,7 @@ export default function OurMenuView() {
       />
       <MenuCategory itemCategory={"pizza"} />
       <Link href="/order/pizza">
-        <button className="btn mx-auto mb-20 block w-3/4">
+        <button className="mx-auto mb-20 block w-3/4 rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white">
           ORDER YOUR FAVOURITE FOOD
         </button>
       </Link>
@@ -58,7 +58,7 @@ export default function OurMenuView() {
       />
       <MenuCategory itemCategory={"salad"} />
       <Link href="/order/salad">
-        <button className="btn mx-auto mb-20 block w-3/4">
+        <button className="mx-auto mb-20 block w-3/4 rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white">
           ORDER YOUR FAVOURITE FOOD
         </button>
       </Link>
@@ -72,7 +72,7 @@ export default function OurMenuView() {
       />
       <MenuCategory itemCategory={"soup"} />
       <Link href="/order/soup">
-        <button className="btn mx-auto mb-20 block w-3/4">
+        <button className="mx-auto mb-20 block w-3/4 rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white">
           ORDER YOUR FAVOURITE FOOD
         </button>
       </Link>

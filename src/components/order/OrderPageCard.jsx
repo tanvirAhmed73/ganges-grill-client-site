@@ -53,24 +53,22 @@ export default function OrderPageCard({ item }) {
   };
 
   return (
-    <div>
-      <div className="card mt-5 h-[450px] bg-base-100 shadow-xl">
-        <figure>
-          <img className="h-max w-full" src={image} alt="food" />
-        </figure>
-        <div className="card-body">
-          <h2 className="card-title">{name}</h2>
-          <p>Price: ${price}</p>
-          <p>{recipe}</p>
-          <div className="card-actions mt-3 justify-end">
-            <button
-              type="button"
-              onClick={handleAddToCart}
-              className="btn btn-primary mx-auto block text-white"
-            >
-              ADD TO CART
-            </button>
-          </div>
+    <div className="mt-5 overflow-hidden rounded-2xl border border-black/5 bg-white shadow-xl">
+      <figure>
+        <img className="h-52 w-full object-cover" src={image} alt="food" />
+      </figure>
+      <div className="space-y-2 p-4">
+        <h2 className="text-lg font-semibold text-brand-dark">{name}</h2>
+        <p className="text-sm text-brand-muted">Price: ${price}</p>
+        <p className="line-clamp-3 text-sm text-brand-muted">{recipe}</p>
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="mx-auto block rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white"
+          >
+            ADD TO CART
+          </button>
         </div>
       </div>
     </div>

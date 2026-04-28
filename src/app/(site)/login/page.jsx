@@ -7,8 +7,8 @@ export const metadata = {
 
 function LoginFallback() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-base-200">
-      <span className="loading loading-spinner loading-lg text-primary" />
+    <div className="flex min-h-screen items-center justify-center bg-brand-background">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-secondary border-t-brand-primary" />
     </div>
   );
 }

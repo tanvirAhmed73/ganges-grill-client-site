@@ -69,7 +69,7 @@ export default function AllUserPage() {
     <div>
       <Title title={"---How Many---"} subtitle={"MANAGE ALL USERS"} />
 
-      <div className="mx-auto bg-white md:w-3/4">
+      <div className="mx-auto rounded-2xl bg-white p-4 md:w-3/4">
         <div className="flex justify-around">
           <h1 className="mt-5">TOTAL USERS:{users.length} </h1>
         </div>
@@ -77,7 +77,7 @@ export default function AllUserPage() {
           {users.map((item) => (
             <div
               key={item._id}
-              className="mx-auto mt-3 flex w-[90%] bg-white shadow-xl md:hidden"
+              className="mx-auto mt-3 flex w-[90%] rounded-xl border border-black/5 bg-white shadow-sm md:hidden"
             >
               <h1 className="w-1/3 p-4 uppercase">
                 User Name:- &apos;{item.name ? item.name : item.displayName}&apos;
@@ -88,7 +88,7 @@ export default function AllUserPage() {
                 {item.role === "admin" ? (
                   <button
                     type="button"
-                    className="btn btn-disabled btn-xs bg-green-700 text-white"
+                    className="rounded-md bg-green-700 px-2 py-1 text-xs font-semibold text-white opacity-60"
                   >
                     Make Admin
                   </button>
@@ -96,7 +96,7 @@ export default function AllUserPage() {
                   <button
                     type="button"
                     onClick={() => handleMakeAdmin(item)}
-                    className="btn btn-xs bg-green-700 text-white"
+                    className="rounded-md bg-green-700 px-2 py-1 text-xs font-semibold text-white"
                   >
                     Make Admin
                   </button>
@@ -105,7 +105,7 @@ export default function AllUserPage() {
                 <button
                   type="button"
                   onClick={() => handleDelete(item._id)}
-                  className="btn btn-ghost btn-xs bg-red-600 text-white"
+                  className="rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-white"
                 >
                   DELETE
                 </button>
@@ -115,34 +115,30 @@ export default function AllUserPage() {
         </div>
 
         <div className="hidden overflow-x-auto md:block">
-          <table className="table">
+          <table className="min-w-full border-collapse text-left">
             <thead>
-              <tr>
-                <th>NAME</th>
-                <th>EMAIL</th>
-                <th>ROLE</th>
-                <th>Action</th>
+              <tr className="border-b border-black/10 text-sm text-brand-muted">
+                <th className="px-3 py-2">NAME</th>
+                <th className="px-3 py-2">EMAIL</th>
+                <th className="px-3 py-2">ROLE</th>
+                <th className="px-3 py-2">Action</th>
               </tr>
             </thead>
             <tbody>
               {users.map((item) => (
-                <tr key={item._id}>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="font-bold">
-                        {item.name ? item.name : item.displayName}
-                      </div>
-                    </div>
+                <tr key={item._id} className="border-b border-black/5">
+                  <td className="px-3 py-2">
+                    <div className="font-bold">{item.name ? item.name : item.displayName}</div>
                   </td>
-                  <td>
+                  <td className="px-3 py-2">
                     <div className="font-bold">{item.email}</div>
                   </td>
-                  <td>
+                  <td className="px-3 py-2">
                     <p>Role :{item.role ? item.role : " User"}</p>
                     {item.role === "admin" ? (
                       <button
                         type="button"
-                        className="btn btn-disabled btn-xs bg-green-700 text-white"
+                        className="rounded-md bg-green-700 px-2 py-1 text-xs font-semibold text-white opacity-60"
                       >
                         Make Admin
                       </button>
@@ -150,21 +146,21 @@ export default function AllUserPage() {
                       <button
                         type="button"
                         onClick={() => handleMakeAdmin(item)}
-                        className="btn btn-xs bg-green-700 text-white"
+                        className="rounded-md bg-green-700 px-2 py-1 text-xs font-semibold text-white"
                       >
                         Make Admin
                       </button>
                     )}
                   </td>
-                  <th>
+                  <td className="px-3 py-2">
                     <button
                       type="button"
                       onClick={() => handleDelete(item._id)}
-                      className="btn btn-ghost btn-xs bg-red-600 text-white"
+                      className="rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-white"
                     >
                       DELETE
                     </button>
-                  </th>
+                  </td>
                 </tr>
               ))}
             </tbody>

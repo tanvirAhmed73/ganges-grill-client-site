@@ -46,7 +46,7 @@ const cuisines = [
   {
     name: "Rice Dishes",
     image:
-      "https://images.unsplash.com/photo-1604908177225-70524f4f3f73?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1516684669134-de6f7c473a2a?auto=format&fit=crop&w=800&q=80",
   },
 ];
 
@@ -88,7 +88,7 @@ const featuredRestaurants = [
     eta: "25 min",
     rating: 4.3,
     image:
-      "https://images.unsplash.com/photo-1563379091339-03246963d51a?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1000&q=80",
   },
   {
     name: "Rice on Fire",

@@ -3,8 +3,7 @@
  *
  * CUSTOM COLORS (single source of truth)
  * Use utility classes like `bg-brand-primary`, `text-brand-muted`.
- * DaisyUI remains enabled until the redesign is complete; new work should
- * prefer these `brand-*` tokens over Daisy semantic colors (`primary`, `base-100`, …).
+ * DaisyUI removed — use Tailwind + `brand-*` tokens only.
  *
  * Token map (design intent):
  * | Token              | Hex       | Use case                          |
@@ -42,8 +41,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    // TODO (redesign): remove DaisyUI once all components use Tailwind + brand tokens only
-    require("daisyui"),
-  ],
+  plugins: [],
 };

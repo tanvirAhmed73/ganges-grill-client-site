@@ -24,7 +24,7 @@ export default function ViewPage() {
         <h2 className="md:text-2xl">{user?.email}</h2>
         <button
           type="button"
-          className="btn btn-sm mb-4 bg-red-600 text-white"
+          className="mb-4 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white"
           onClick={() => logOut()}
         >
           Logout

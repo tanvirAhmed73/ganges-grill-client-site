@@ -36,7 +36,7 @@ export default function ManageMenuPage() {
         subtitle={"MANAGE YOUR RESTURANT MENU"}
       />
 
-      <div className="mx-auto bg-white md:w-3/4">
+      <div className="mx-auto rounded-2xl bg-white p-4 md:w-3/4">
         <div className="flex justify-around">
           <h1 className="mt-5">TOTAL item: {menu.length}</h1>
         </div>
@@ -44,7 +44,7 @@ export default function ManageMenuPage() {
           {menu.map((item) => (
             <div
               key={item._id}
-              className="mx-auto mt-3 flex w-11/12 bg-white shadow-xl md:hidden"
+              className="mx-auto mt-3 flex w-11/12 overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm md:hidden"
             >
               <figure className="w-1/2">
                 <img className="h-auto w-full" src={item.image} alt="food" />
@@ -57,7 +57,7 @@ export default function ManageMenuPage() {
                 <button
                   type="button"
                   onClick={() => handleDelete(item._id)}
-                  className="btn btn-ghost btn-xs bg-red-600 text-white"
+                  className="rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-white"
                 >
                   DELETE
                 </button>
@@ -67,40 +67,34 @@ export default function ManageMenuPage() {
         </div>
 
         <div className="hidden overflow-x-auto md:block">
-          <table className="table">
+          <table className="min-w-full border-collapse text-left">
             <thead>
-              <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Action</th>
+              <tr className="border-b border-black/10 text-sm text-brand-muted">
+                <th className="px-3 py-2">Image</th>
+                <th className="px-3 py-2">Name</th>
+                <th className="px-3 py-2">Price</th>
+                <th className="px-3 py-2">Action</th>
               </tr>
             </thead>
             <tbody>
               {menu.map((item) => (
-                <tr key={item._id}>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img src={item.image} alt="" />
-                        </div>
-                      </div>
-                    </div>
+                <tr key={item._id} className="border-b border-black/5">
+                  <td className="px-3 py-2">
+                    <img src={item.image} alt="" className="h-12 w-12 rounded-lg object-cover" />
                   </td>
-                  <td>
+                  <td className="px-3 py-2">
                     <div className="font-bold">{item.name}</div>
                   </td>
-                  <td>{item.price}</td>
-                  <th>
+                  <td className="px-3 py-2">{item.price}</td>
+                  <td className="px-3 py-2">
                     <button
                       type="button"
                       onClick={() => handleDelete(item._id)}
-                      className="btn btn-ghost btn-xs bg-red-600 text-white"
+                      className="rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-white"
                     >
                       DELETE
                     </button>
-                  </th>
+                  </td>
                 </tr>
               ))}
             </tbody>

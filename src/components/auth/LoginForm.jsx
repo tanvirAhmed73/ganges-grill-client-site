@@ -69,71 +69,63 @@ export default function LoginForm() {
   };
 
   return (
-    <div>
-      <div className="hero min-h-screen bg-base-200">
-        <div className="hero-content flex-col">
-          <div className="text-center lg:text-left">
-            <h1 className="mt-24 text-5xl font-bold lg:mt-0">Login now!</h1>
-          </div>
-          <div className="card w-full max-w-sm shrink-0 bg-base-100 shadow-2xl">
-            <form onSubmit={handleLoginSubmit} className="card-body">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Email</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  className="input input-bordered"
-                  required
-                />
-              </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Password</span>
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  className="input input-bordered"
-                  required
-                />
-              </div>
-              <div className="form-control">
-                <div className="items-center justify-center">
-                  <label className="">
-                    <LoadCanvasTemplate />
-                    <input
-                      type="text"
-                      name="captcha"
-                      ref={captchaRef}
-                      placeholder="Enter Captcha"
-                      className="input input-bordered mr-2"
-                      required
-                    />
-                  </label>
-                </div>
-              </div>
+    <div className="min-h-screen bg-brand-background px-4 py-10">
+      <div className="mx-auto flex w-full max-w-md flex-col gap-6">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-brand-dark">Login now!</h1>
+        </div>
+        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-xl">
+          <form onSubmit={handleLoginSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-brand-dark">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="w-full rounded-lg border border-brand-secondary/70 px-3 py-2.5 outline-none ring-brand-primary focus:ring-2"
+                required
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-brand-dark">Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="w-full rounded-lg border border-brand-secondary/70 px-3 py-2.5 outline-none ring-brand-primary focus:ring-2"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <LoadCanvasTemplate />
+              <input
+                type="text"
+                name="captcha"
+                ref={captchaRef}
+                placeholder="Enter Captcha"
+                className="w-full rounded-lg border border-brand-secondary/70 px-3 py-2.5 outline-none ring-brand-primary focus:ring-2"
+                required
+              />
+            </div>
 
-              <label className="label underline">
-                <Link href="/signUp">Need to create an account?</Link>
-              </label>
-              <p className="ml-1">
-                Sign in with Google:
-                <FaGoogle
-                  onClick={handleGoogleLogin}
-                  className="ml-1 inline cursor-pointer text-xl text-red-600"
-                />
-              </p>
-              <label className="ml-1 text-red-700">{error ? error : ""}</label>
+            <label className="block text-sm underline">
+              <Link href="/signUp">Need to create an account?</Link>
+            </label>
+            <p className="text-sm text-brand-muted">
+              Sign in with Google:
+              <FaGoogle
+                onClick={handleGoogleLogin}
+                className="ml-2 inline cursor-pointer text-xl text-red-600"
+              />
+            </p>
+            <label className="block text-sm text-red-700">{error ? error : ""}</label>
 
-              <div className="form-control mt-6">
-                <input className="btn btn-primary" type="submit" value="SignUp" />
-              </div>
-            </form>
-          </div>
+            <input
+              className="mt-2 w-full rounded-lg bg-brand-primary px-4 py-2.5 font-semibold text-white"
+              type="submit"
+              value="Sign In"
+            />
+          </form>
         </div>
       </div>
     </div>
