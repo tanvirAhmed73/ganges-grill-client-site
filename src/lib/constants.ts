@@ -1,4 +1,6 @@
-/** Backend API base URL (public; same as legacy Vite app). */
+/**
+ * Backend API base URL.
+ * Set `NEXT_PUBLIC_API_URL` in `.env.local` (e.g. `http://localhost:5000`).
+ */
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  "https://ganges-grill-server-site.vercel.app/";
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";

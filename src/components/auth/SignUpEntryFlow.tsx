@@ -1,18 +1,14 @@
 "use client";
 
 /**
- * Signup entry: email prefill + Google, aligned with login modal styling.
+ * Signup entry: email → full registration on `/signUp`.
  */
 
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { IoArrowBack } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
-import Swal from "sweetalert2";
 import { useAuthModal } from "@/contexts/auth-modal-context";
-import useAuth from "@/hooks/useAuth";
-import usePublic from "@/hooks/usePublic";
 
 const EMAIL_RE =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -29,8 +25,6 @@ export default function SignUpEntryFlow({
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { closeAuthModal, openAuthModal } = useAuthModal();
-  const axiosPublic = usePublic();
-  const auth = useAuth();
 
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -41,30 +35,6 @@ export default function SignUpEntryFlow({
     const t = requestAnimationFrame(() => inputRef.current?.focus());
     return () => cancelAnimationFrame(t);
   }, []);
-
-  const handleGoogle = () => {
-    if (!auth?.signInWithGoogle) return;
-    setSubmitting(true);
-    auth
-      .signInWithGoogle()
-      .then((result: { user: { email: string | null; displayName: string | null } }) => {
-        const e = result.user.email;
-        const name = result.user.displayName;
-        if (e) {
-          axiosPublic.post("/user", { email: e, name }).catch(() => {});
-        }
-        closeAuthModal();
-        router.push("/");
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Welcome!",
-          showConfirmButton: false,
-          timer: 1600,
-        });
-      })
-      .finally(() => setSubmitting(false));
-  };
 
   const handleContinue = (e: FormEvent) => {
     e.preventDefault();
@@ -140,25 +110,6 @@ export default function SignUpEntryFlow({
           Continue
         </button>
       </form>
-
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center" aria-hidden>
-          <div className="w-full border-t border-neutral-200" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase tracking-wide text-brand-muted">
-          <span className="bg-white px-3">or</span>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        onClick={handleGoogle}
-        disabled={submitting}
-        className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-brand-dark shadow-sm transition-colors hover:bg-neutral-50 disabled:opacity-60"
-      >
-        <FcGoogle className="text-xl" aria-hidden />
-        Continue with Google
-      </button>
 
       <p className="mt-6 text-center text-sm text-brand-muted">
         Already have an account?{" "}

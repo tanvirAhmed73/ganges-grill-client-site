@@ -1,8 +1,7 @@
 "use client";
 
 /**
- * Two-step email → password login (reference: marketplace-style auth UX).
- * Brand tokens: `brand-*` from Tailwind config.
+ * Email → password login against backend `POST /auth/login` (`docs/auth-api.md`).
  */
 
 import Link from "next/link";
@@ -15,31 +14,25 @@ import {
   useState,
   type FormEvent,
 } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { IoArrowBack, IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import Swal from "sweetalert2";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 import useAuth from "@/hooks/useAuth";
-import usePublic from "@/hooks/usePublic";
 
 const EMAIL_RE =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
-function firebaseAuthMessage(code: string): string {
-  switch (code) {
-    case "auth/invalid-credential":
-    case "auth/wrong-password":
-      return "Incorrect email or password.";
-    case "auth/user-not-found":
-      return "No account found for this email.";
-    case "auth/too-many-requests":
-      return "Too many attempts. Try again later.";
-    case "auth/user-disabled":
-      return "This account has been disabled.";
-    default:
-      return "Could not sign you in. Please try again.";
-  }
+function apiErrorMessage(err: unknown): string {
+  const e = err as {
+    response?: { data?: { message?: string; error?: string } };
+    message?: string;
+  };
+  const msg =
+    e.response?.data?.message ??
+    e.response?.data?.error ??
+    e.message;
+  return typeof msg === "string" ? msg : "Could not sign you in. Please try again.";
 }
 
 function EnvelopeIllustration() {
@@ -130,7 +123,6 @@ type Step = "email" | "password";
 export default function LoginEmailPasswordFlow({
   onLeaveLoginFlow,
 }: {
-  /** From email step, go back to marketing entry instead of closing the overlay. */
   onLeaveLoginFlow?: () => void;
 } = {}) {
   const titleId = useId();
@@ -140,7 +132,6 @@ export default function LoginEmailPasswordFlow({
 
   const router = useRouter();
   const { closeAuthModal, returnAfterLogin } = useAuthModal();
-  const axiosPublic = usePublic();
   const auth = useAuth();
 
   const [step, setStep] = useState<Step>("email");
@@ -165,9 +156,10 @@ export default function LoginEmailPasswordFlow({
   }, [step]);
 
   const finishLogin = useCallback(() => {
-    const dest = returnAfterLogin && returnAfterLogin.startsWith("/")
-      ? returnAfterLogin
-      : "/";
+    const dest =
+      returnAfterLogin && returnAfterLogin.startsWith("/")
+        ? returnAfterLogin
+        : "/";
     closeAuthModal();
     router.push(dest);
     Swal.fire({
@@ -179,26 +171,6 @@ export default function LoginEmailPasswordFlow({
     });
   }, [closeAuthModal, returnAfterLogin, router]);
 
-  const handleGoogle = () => {
-    if (!auth?.signInWithGoogle) return;
-    setSubmitting(true);
-    setFieldError("");
-    auth
-      .signInWithGoogle()
-      .then((result) => {
-        const e = result.user.email;
-        const name = result.user.displayName;
-        if (e) {
-          axiosPublic.post("/user", { email: e, name }).catch(() => {});
-        }
-        finishLogin();
-      })
-      .catch(() => {
-        setFieldError("Google sign-in was cancelled or failed.");
-      })
-      .finally(() => setSubmitting(false));
-  };
-
   const handleEmailContinue = (e: FormEvent) => {
     e.preventDefault();
     if (!canContinueEmail) return;
@@ -206,63 +178,19 @@ export default function LoginEmailPasswordFlow({
     setStep("password");
   };
 
-  const handlePasswordSubmit = (e: FormEvent) => {
+  const handlePasswordSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!canSubmitPassword || !auth?.signIn) return;
     setSubmitting(true);
     setFieldError("");
-    auth
-      .signIn(email.trim(), password)
-      .then(() => finishLogin())
-      .catch((err: { code?: string }) => {
-        setFieldError(firebaseAuthMessage(err?.code ?? ""));
-      })
-      .finally(() => setSubmitting(false));
-  };
-
-  const handleForgotPassword = () => {
-    if (!email.trim() || !auth?.sendPasswordReset) return;
-    setSubmitting(true);
-    setFieldError("");
-    auth
-      .sendPasswordReset(email.trim())
-      .then(() => {
-        Swal.fire({
-          icon: "info",
-          title: "Check your email",
-          text: "We sent a link to reset your password.",
-          confirmButtonColor: "#FF6B35",
-        });
-      })
-      .catch(() => {
-        setFieldError("Could not send reset email. Try again.");
-      })
-      .finally(() => setSubmitting(false));
-  };
-
-  const handleSendLoginLink = () => {
-    if (!email.trim() || !auth?.sendEmailSignInLink) return;
-    setSubmitting(true);
-    setFieldError("");
     try {
-      window.localStorage.setItem("emailForSignIn", email.trim());
-    } catch {
-      /* ignore */
+      await auth.signIn(email.trim(), password);
+      finishLogin();
+    } catch (err) {
+      setFieldError(apiErrorMessage(err));
+    } finally {
+      setSubmitting(false);
     }
-    auth
-      .sendEmailSignInLink(email.trim())
-      .then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Link sent",
-          text: "Open the email we sent to sign in on this device.",
-          confirmButtonColor: "#FF6B35",
-        });
-      })
-      .catch(() => {
-        setFieldError("Could not send sign-in link. Try password instead.");
-      })
-      .finally(() => setSubmitting(false));
   };
 
   const goBack = () => {
@@ -313,7 +241,7 @@ export default function LoginEmailPasswordFlow({
             id={descId}
             className="mt-2 text-center text-sm text-brand-muted"
           >
-            We&apos;ll check if you have an account
+            We&apos;ll sign you in with your password
           </p>
 
           <form onSubmit={handleEmailContinue} className="mt-6 space-y-4">
@@ -352,25 +280,6 @@ export default function LoginEmailPasswordFlow({
             </button>
           </form>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center" aria-hidden>
-              <div className="w-full border-t border-neutral-200" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase tracking-wide text-brand-muted">
-              <span className="bg-white px-3">or</span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleGoogle}
-            disabled={submitting}
-            className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-brand-dark shadow-sm transition-colors hover:bg-neutral-50 disabled:opacity-60"
-          >
-            <FcGoogle className="text-xl" aria-hidden />
-            Continue with Google
-          </button>
-
           <p className="mt-8 text-center text-[0.7rem] leading-relaxed text-brand-muted sm:text-xs">
             By continuing you agree to our{" "}
             <Link
@@ -404,8 +313,8 @@ export default function LoginEmailPasswordFlow({
             id={descId}
             className="mt-3 text-center text-sm leading-relaxed text-brand-muted"
           >
-            Log in by typing your password. We can also send a login link to
-            your email.
+            Enter your password. Your email must be verified before you can log
+            in.
           </p>
           <p className="mt-2 text-center text-sm font-semibold text-brand-dark">
             {email.trim()}
@@ -443,14 +352,6 @@ export default function LoginEmailPasswordFlow({
               </button>
             </div>
 
-            <button
-              type="button"
-              onClick={handleForgotPassword}
-              className="text-left text-sm font-semibold text-brand-dark underline-offset-2 hover:underline"
-            >
-              Forgot your password?
-            </button>
-
             {fieldError ? (
               <p className="text-sm text-red-600" role="alert">
                 {fieldError}
@@ -459,24 +360,26 @@ export default function LoginEmailPasswordFlow({
 
             <button
               type="submit"
-              disabled={!canSubmitPassword}
+              disabled={!canSubmitPassword || submitting}
               className={`w-full rounded-xl py-3.5 text-center text-base font-semibold transition-colors ${
-                canSubmitPassword
+                canSubmitPassword && !submitting
                   ? "cursor-pointer bg-brand-primary text-white hover:bg-brand-primary/90"
                   : "cursor-not-allowed bg-neutral-200 text-white"
               }`}
             >
-              {submitting ? "Signing in…" : "Log in with password"}
+              {submitting ? "Signing in…" : "Log in"}
             </button>
 
-            <button
-              type="button"
-              onClick={handleSendLoginLink}
-              disabled={submitting}
-              className="w-full rounded-xl border-2 border-neutral-200 bg-white py-3.5 text-center text-base font-semibold text-brand-dark transition-colors hover:bg-neutral-50 disabled:opacity-60"
-            >
-              Send me a login link
-            </button>
+            <p className="text-center text-sm text-brand-muted">
+              New here?{" "}
+              <Link
+                href={`/verify-email?email=${encodeURIComponent(email.trim())}`}
+                className="font-semibold text-brand-primary underline-offset-2 hover:underline"
+                onClick={closeAuthModal}
+              >
+                Verify your email
+              </Link>
+            </p>
           </form>
         </div>
       )}

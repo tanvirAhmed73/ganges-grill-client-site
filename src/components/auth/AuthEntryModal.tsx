@@ -1,27 +1,20 @@
 "use client";
 
 /**
- * Global auth: (1) split marketing + Welcome entry, (2) email/password flows.
+ * Global auth: (1) marketing entry, (2) email/password login & signup entry.
  */
 
 import type { MouseEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Swal from "sweetalert2";
 import AuthGateModalEntry from "@/components/auth/AuthGateModalEntry";
 import LoginEmailPasswordFlow from "@/components/auth/LoginEmailPasswordFlow";
 import SignUpEntryFlow from "@/components/auth/SignUpEntryFlow";
 import { useAuthModal } from "@/contexts/auth-modal-context";
-import useAuth from "@/hooks/useAuth";
-import usePublic from "@/hooks/usePublic";
 
 type Phase = "entry" | "login" | "signup";
 
 export default function AuthEntryModal() {
-  const { isOpen, closeAuthModal, returnAfterLogin } = useAuthModal();
-  const { signInWithGoogle } = useAuth();
-  const axiosPublic = usePublic();
-  const router = useRouter();
+  const { isOpen, closeAuthModal } = useAuthModal();
   const [phase, setPhase] = useState<Phase>("entry");
 
   useEffect(() => {
@@ -34,46 +27,6 @@ export default function AuthEntryModal() {
     },
     [closeAuthModal]
   );
-
-  const finishSocialLogin = useCallback(() => {
-    const dest =
-      returnAfterLogin && returnAfterLogin.startsWith("/")
-        ? returnAfterLogin
-        : "/";
-    closeAuthModal();
-    router.push(dest);
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "You're signed in",
-      showConfirmButton: false,
-      timer: 1600,
-    });
-  }, [closeAuthModal, returnAfterLogin, router]);
-
-  const handleGoogleEntry = useCallback(() => {
-    if (!signInWithGoogle) return;
-    signInWithGoogle()
-      .then((result) => {
-        const email = result.user.email;
-        const name = result.user.displayName;
-        if (email) {
-          axiosPublic.post("/user", { email, name }).catch(() => {});
-        }
-        finishSocialLogin();
-      })
-      .catch(() => {});
-  }, [axiosPublic, finishSocialLogin, signInWithGoogle]);
-
-  const handleComingSoon = useCallback((name: string) => {
-    Swal.fire({
-      icon: "info",
-      title: `${name} is not connected yet`,
-      text: "Use Google or email on the next screen.",
-      timer: 2200,
-      showConfirmButton: false,
-    });
-  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -119,9 +72,6 @@ export default function AuthEntryModal() {
         {phase === "entry" ? (
           <AuthGateModalEntry
             onClose={closeAuthModal}
-            onFacebook={() => handleComingSoon("Facebook")}
-            onGoogle={handleGoogleEntry}
-            onApple={() => handleComingSoon("Apple")}
             onChooseLogin={() => setPhase("login")}
             onChooseSignUp={() => setPhase("signup")}
           />

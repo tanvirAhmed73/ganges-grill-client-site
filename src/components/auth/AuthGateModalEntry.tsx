@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * First screen of auth: promo column + Welcome / social / Log in / Sign up.
- * Tailwind + brand tokens (`brand-primary`); left panel hidden below `lg`.
+ * First screen of auth: promo column + Welcome + email/password entry points.
+ * OAuth removed — app uses backend email + password (`docs/auth-api.md`).
  */
 
 import Link from "next/link";
@@ -10,24 +10,16 @@ import { useRouter } from "next/navigation";
 import type { MouseEvent } from "react";
 import { useId } from "react";
 import { AiFillStar } from "react-icons/ai";
-import { FaApple, FaFacebookF } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 import { MdClose } from "react-icons/md";
 
 export interface AuthGateModalEntryProps {
   onClose: () => void;
-  onFacebook: () => void;
-  onGoogle: () => void;
-  onApple: () => void;
   onChooseLogin: () => void;
   onChooseSignUp: () => void;
 }
 
 export default function AuthGateModalEntry({
   onClose,
-  onFacebook,
-  onGoogle,
-  onApple,
   onChooseLogin,
   onChooseSignUp,
 }: AuthGateModalEntryProps) {
@@ -47,7 +39,6 @@ export default function AuthGateModalEntry({
       aria-describedby={descId}
       className="relative flex max-h-[min(92dvh,720px)] w-full max-w-5xl flex-col-reverse overflow-hidden rounded-t-[1.25rem] bg-brand-background shadow-2xl ring-1 ring-black/10 sm:max-h-[min(90dvh,720px)] sm:rounded-3xl md:flex-row md:rounded-3xl"
     >
-      {/* Left — promo (desktop only; below auth on mobile via flex-col-reverse) */}
       <aside className="hidden max-h-[38dvh] min-h-0 shrink-0 flex-col justify-center gap-4 overflow-y-auto overscroll-contain border-t border-white/10 bg-[#333333] px-5 py-6 text-center text-white lg:flex lg:max-h-none lg:w-[min(46%,420px)] lg:flex-[0_0_auto] lg:border-t-0 lg:px-10 lg:py-12">
         <div className="mx-auto flex aspect-square w-[min(9rem,36vw)] max-w-[200px] shrink-0 items-center justify-center rounded-2xl bg-white p-3 shadow-inner lg:w-52 lg:p-4">
           <div className="flex h-full w-full flex-col items-center justify-center gap-1 border-2 border-dashed border-neutral-300 text-neutral-400">
@@ -84,7 +75,6 @@ export default function AuthGateModalEntry({
         </div>
       </aside>
 
-      {/* Right — entry actions */}
       <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overscroll-contain bg-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-12 sm:px-8 sm:pb-10 sm:pt-16 lg:max-w-none lg:flex-[1_1_58%] lg:px-10">
         <button
           type="button"
@@ -103,49 +93,11 @@ export default function AuthGateModalEntry({
             Welcome!
           </h2>
           <p id={descId} className="mt-1.5 text-sm text-brand-muted sm:mt-2">
-            Sign up or log in to continue
+            Sign up or log in with your email
           </p>
         </div>
 
         <div className="flex flex-col gap-2.5 sm:gap-3">
-          <button
-            type="button"
-            onClick={onFacebook}
-            className="flex min-h-[44px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-[#1877F2] px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-95 active:opacity-90 sm:gap-3 sm:py-3.5"
-          >
-            <FaFacebookF className="shrink-0 text-lg" aria-hidden />
-            <span className="truncate">
-              <span className="hidden sm:inline">Continue with </span>Facebook
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onGoogle}
-            className="flex min-h-[44px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-brand-dark shadow-sm transition-colors hover:bg-neutral-50 active:bg-neutral-50 sm:gap-3 sm:py-3.5"
-          >
-            <FcGoogle className="shrink-0 text-xl" aria-hidden />
-            Continue with Google
-          </button>
-
-          <button
-            type="button"
-            onClick={onApple}
-            className="flex min-h-[44px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-95 active:opacity-90 sm:gap-3 sm:py-3.5"
-          >
-            <FaApple className="shrink-0 text-xl" aria-hidden />
-            Continue with Apple
-          </button>
-
-          <div className="relative py-2">
-            <div className="absolute inset-0 flex items-center" aria-hidden>
-              <div className="w-full border-t border-neutral-200" />
-            </div>
-            <div className="relative flex justify-center text-[0.65rem] uppercase tracking-wide text-brand-muted sm:text-xs">
-              <span className="bg-white px-3">or</span>
-            </div>
-          </div>
-
           <button
             type="button"
             onClick={onChooseLogin}

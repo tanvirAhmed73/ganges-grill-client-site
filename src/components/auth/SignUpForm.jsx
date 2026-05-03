@@ -3,12 +3,10 @@
 import { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AuthContext } from "@/providers/AuthProvider";
-import usePublic from "@/hooks/usePublic";
 import Swal from "sweetalert2";
+import { AuthContext } from "@/providers/AuthProvider";
 
 export default function SignUpForm() {
-  const axiosPublic = usePublic();
   const { register } = useContext(AuthContext);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -37,19 +35,25 @@ export default function SignUpForm() {
       return;
     }
 
-    register(email, password)
-      .then((userCredential) => {
-        axiosPublic.post("/user", { name, email }).then(() => {});
-        router.push("/");
+    setError("");
+    register({ email, password, name })
+      .then(() => {
+        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: "User Created SuccessFully",
+          title: "Check your email for a verification code",
           showConfirmButton: false,
-          timer: 1500,
+          timer: 2200,
         });
       })
-      .catch(() => {});
+      .catch((err) => {
+        const msg =
+          err?.response?.data?.message ??
+          err?.response?.data?.error ??
+          "Registration failed";
+        setError(typeof msg === "string" ? msg : "Registration failed");
+      });
   };
 
   return (
@@ -57,6 +61,9 @@ export default function SignUpForm() {
       <div className="mx-auto flex w-full max-w-md flex-col gap-6">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-brand-dark">Register now!</h1>
+          <p className="mt-2 text-sm text-brand-muted">
+            We&apos;ll email you a code to verify your account before you can log in.
+          </p>
         </div>
         <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-4">

@@ -1,128 +1,172 @@
 "use client";
 
 import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  sendSignInLinkToEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth";
-import {
   createContext,
   useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { getClientFirebaseApp } from "@/lib/firebase/client";
-import { axiosPublic } from "@/lib/api/axios-public";
+import {
+  apiGetMe,
+  apiLogin,
+  apiLogout,
+  apiLogoutAll,
+  apiRegister,
+  apiResendVerification,
+  apiVerifyEmail,
+} from "@/lib/api/auth-api";
+import { refreshAccessToken } from "@/lib/auth/refresh-access";
+import {
+  clearTokens,
+  getAccessToken,
+  getRefreshToken,
+  persistTokensFromResponse,
+} from "@/lib/auth/tokens";
 
 export const AuthContext = createContext(null);
 
-function getAuthSafe() {
-  const app = getClientFirebaseApp();
-  return app ? getAuth(app) : null;
+function normalizeUser(data) {
+  if (!data || typeof data !== "object") return null;
+  const email = data.email ?? "";
+  const name = data.name ?? data.displayName ?? "";
+  return {
+    ...data,
+    email,
+    displayName: String(name || email.split("@")[0] || "User"),
+    uid: data.id ?? data.sub ?? email,
+  };
 }
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const googleProvider = useMemo(() => new GoogleAuthProvider(), []);
 
-  const signInWithGoogle = useCallback(() => {
-    const auth = getAuthSafe();
-    if (!auth) {
-      return Promise.reject(new Error("Firebase is not configured"));
+  const hydrateUser = useCallback(async () => {
+    const token = getAccessToken();
+    if (!token) {
+      setUser(null);
+      return;
     }
-    return signInWithPopup(auth, googleProvider);
-  }, [googleProvider]);
-
-  const register = useCallback((email, password) => {
-    setLoading(true);
-    const auth = getAuthSafe();
-    if (!auth) {
-      return Promise.reject(new Error("Firebase is not configured"));
+    try {
+      const { data } = await apiGetMe(token);
+      setUser(normalizeUser(data));
+    } catch {
+      const ok = await refreshAccessToken();
+      if (ok) {
+        const t2 = getAccessToken();
+        if (t2) {
+          try {
+            const { data } = await apiGetMe(t2);
+            setUser(normalizeUser(data));
+            return;
+          } catch {
+            /* fall through */
+          }
+        }
+      }
+      clearTokens();
+      setUser(null);
     }
-    return createUserWithEmailAndPassword(auth, email, password);
-  }, []);
-
-  const signIn = useCallback((email, password) => {
-    setLoading(true);
-    const auth = getAuthSafe();
-    if (!auth) {
-      return Promise.reject(new Error("Firebase is not configured"));
-    }
-    return signInWithEmailAndPassword(auth, email, password);
-  }, []);
-
-  const sendPasswordReset = useCallback((email) => {
-    const auth = getAuthSafe();
-    if (!auth) {
-      return Promise.reject(new Error("Firebase is not configured"));
-    }
-    return sendPasswordResetEmail(auth, email);
-  }, []);
-
-  const sendEmailSignInLink = useCallback((email) => {
-    const auth = getAuthSafe();
-    if (!auth) {
-      return Promise.reject(new Error("Firebase is not configured"));
-    }
-    if (typeof window === "undefined") {
-      return Promise.reject(new Error("Email link sign-in is client-only"));
-    }
-    const actionCodeSettings = {
-      url: `${window.location.origin}/auth/complete-email-link`,
-      handleCodeInApp: true,
-    };
-    return sendSignInLinkToEmail(auth, email, actionCodeSettings);
-  }, []);
-
-  const logOut = useCallback(() => {
-    const auth = getAuthSafe();
-    if (!auth) {
-      return Promise.resolve();
-    }
-    return signOut(auth);
   }, []);
 
   useEffect(() => {
-    const auth = getAuthSafe();
-    if (!auth) {
-      setLoading(false);
-      return;
-    }
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      const userEmail = currentUser?.email;
-      if (currentUser) {
-        axiosPublic.post("/jwt", { userEmail }).then((res) => {
-          if (res.data.token) {
-            localStorage.setItem("access_token", res.data.token);
-          }
-        });
-      } else {
-        localStorage.removeItem("access_token");
+    let cancelled = false;
+    (async () => {
+      await hydrateUser();
+      if (!cancelled) setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [hydrateUser]);
+
+  const signIn = useCallback(
+    async (email, password) => {
+      setLoading(true);
+      try {
+        const { data } = await apiLogin({ email, password });
+        persistTokensFromResponse(data);
+        await hydrateUser();
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    },
+    [hydrateUser]
+  );
+
+  const register = useCallback(async ({ email, password, name }) => {
+    await apiRegister({ email, password, name });
   }, []);
 
-  const authInfo = {
-    user,
-    loading,
-    register,
-    signIn,
-    sendPasswordReset,
-    sendEmailSignInLink,
-    logOut,
-    signInWithGoogle,
-  };
+  const verifyEmail = useCallback(
+    async (email, code) => {
+      setLoading(true);
+      try {
+        const { data } = await apiVerifyEmail({ email, code });
+        persistTokensFromResponse(data);
+        await hydrateUser();
+      } finally {
+        setLoading(false);
+      }
+    },
+    [hydrateUser]
+  );
+
+  const resendVerification = useCallback(async (email) => {
+    await apiResendVerification({ email });
+  }, []);
+
+  const logOut = useCallback(async () => {
+    const rt = getRefreshToken();
+    try {
+      if (rt) await apiLogout({ refreshToken: rt });
+    } catch {
+      /* ignore */
+    }
+    clearTokens();
+    setUser(null);
+  }, []);
+
+  const logOutAll = useCallback(async () => {
+    const token = getAccessToken();
+    try {
+      if (token) await apiLogoutAll(token);
+    } catch {
+      /* ignore */
+    }
+    clearTokens();
+    setUser(null);
+  }, []);
+
+  const refreshSession = useCallback(async () => {
+    await hydrateUser();
+  }, [hydrateUser]);
+
+  const authInfo = useMemo(
+    () => ({
+      user,
+      loading,
+      signIn,
+      register,
+      verifyEmail,
+      resendVerification,
+      logOut,
+      logOutAll,
+      refreshSession,
+    }),
+    [
+      user,
+      loading,
+      signIn,
+      register,
+      verifyEmail,
+      resendVerification,
+      logOut,
+      logOutAll,
+      refreshSession,
+    ]
+  );
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
