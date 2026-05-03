@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * Step-by-step signup: email → name → password → confirm (matches login UX).
+ * Restaurant partner signup: email → name → password → confirm → restaurant details.
+ * Calls POST /auth/register-restaurant-owner (then same email verification as customer signup).
  */
 
 import Link from "next/link";
@@ -28,9 +29,9 @@ const EMAIL_RE =
 const PASSWORD_PATTERN =
   /^(?=.*[0-9])(?=.*[-?!@#$%^&*/\\])(?=.*[A-Z])(?=.*[a-z])[a-zA-Z0-9-?!@#$%^&*/\\]{8,30}$/;
 
-/** @typedef {'email' | 'name' | 'password' | 'confirm'} SignStep */
+/** @typedef {'email' | 'name' | 'password' | 'confirm' | 'restaurant'} PartnerStep */
 
-export default function SignUpWizard({
+export default function RestaurantPartnerSignUpWizard({
   layout = "modal",
   onBackToEntry,
   onSwitchToLogin,
@@ -42,15 +43,18 @@ export default function SignUpWizard({
   const inputRef = useRef(null);
   const router = useRouter();
   const { closeAuthModal, openAuthModal } = useAuthModal();
-  const { register } = useContext(AuthContext);
+  const { registerRestaurantOwner } = useContext(AuthContext);
 
   const [step, setStep] = useState(
-    /** @type {'email' | 'name' | 'password' | 'confirm'} */ ("email")
+    /** @type PartnerStep */ ("email")
   );
   const [email, setEmail] = useState(initialEmail);
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [restaurantName, setRestaurantName] = useState("");
+  const [primaryCategory, setPrimaryCategory] = useState("");
+  const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [fieldError, setFieldError] = useState("");
 
@@ -71,6 +75,9 @@ export default function SignUpWizard({
     password.length >= 8 && PASSWORD_PATTERN.test(password);
   const confirmOk =
     confirmPassword === password && confirmPassword.length > 0;
+  const restaurantOk =
+    restaurantName.trim().length >= 1 && restaurantName.trim().length <= 200;
+  const phoneOk = phone.trim().length <= 40;
 
   const goBack = useCallback(() => {
     setFieldError("");
@@ -84,6 +91,10 @@ export default function SignUpWizard({
     }
     if (step === "confirm") {
       setStep("password");
+      return;
+    }
+    if (step === "restaurant") {
+      setStep("confirm");
       return;
     }
     if (step === "email") {
@@ -116,7 +127,7 @@ export default function SignUpWizard({
     setStep("confirm");
   };
 
-  const handleConfirmSubmit = async (e) => {
+  const handleConfirmNext = (e) => {
     e.preventDefault();
     if (!confirmOk) {
       setFieldError(t("signupPasswordMismatch"));
@@ -126,13 +137,31 @@ export default function SignUpWizard({
       setFieldError(t("signupPasswordInvalid"));
       return;
     }
+    setFieldError("");
+    setStep("restaurant");
+  };
+
+  const handleRestaurantSubmit = async (e) => {
+    e.preventDefault();
+    if (!restaurantOk) {
+      setFieldError(t("partnerRestaurantNameError"));
+      return;
+    }
+    if (!phoneOk) {
+      setFieldError(t("partnerPhoneTooLong"));
+      return;
+    }
+    if (!registerRestaurantOwner) return;
     setSubmitting(true);
     setFieldError("");
     try {
-      await register({
+      await registerRestaurantOwner({
         email: email.trim(),
         password,
         name: name.trim(),
+        restaurantName: restaurantName.trim(),
+        primaryCategory: primaryCategory.trim() || undefined,
+        phone: phone.trim() || undefined,
       });
       setPendingVerificationEmail(email.trim());
       const verifyUrl = `/verify-email?email=${encodeURIComponent(email.trim())}`;
@@ -171,18 +200,25 @@ export default function SignUpWizard({
         : "cursor-not-allowed bg-neutral-200 text-white"
     }`;
 
+  const partnerAccentBtn = (enabled) =>
+    `w-full rounded-xl py-3.5 text-center text-base font-semibold transition-colors ${
+      enabled && !submitting
+        ? "cursor-pointer bg-[#0f766e] text-white hover:bg-[#115e59]"
+        : "cursor-not-allowed bg-neutral-200 text-white"
+    }`;
+
   const stepMeta = {
     email: {
       title: t("signupEmailTitle"),
-      subtitle: t("signupEmailSubtitle"),
+      subtitle: t("partnerSignupEmailSubtitle"),
       form: (
         <form onSubmit={handleEmailNext} className="mt-6 space-y-4">
-          <label className="sr-only" htmlFor="su-email">
+          <label className="sr-only" htmlFor="rp-email">
             {t("signupPlaceholderEmail")}
           </label>
           <input
             ref={inputRef}
-            id="su-email"
+            id="rp-email"
             type="email"
             autoComplete="email"
             placeholder={t("signupPlaceholderEmail")}
@@ -209,16 +245,16 @@ export default function SignUpWizard({
       ),
     },
     name: {
-      title: t("signupNameTitle"),
-      subtitle: t("signupNameSubtitle"),
+      title: t("partnerSignupOwnerNameTitle"),
+      subtitle: t("partnerSignupOwnerNameSubtitle"),
       form: (
         <form onSubmit={handleNameNext} className="mt-6 space-y-4">
-          <label className="sr-only" htmlFor="su-name">
+          <label className="sr-only" htmlFor="rp-name">
             {t("signupPlaceholderName")}
           </label>
           <input
             ref={inputRef}
-            id="su-name"
+            id="rp-name"
             type="text"
             autoComplete="name"
             placeholder={t("signupPlaceholderName")}
@@ -249,12 +285,12 @@ export default function SignUpWizard({
       subtitle: t("signupPasswordSubtitle"),
       form: (
         <form onSubmit={handlePasswordNext} className="mt-6 space-y-4">
-          <label className="sr-only" htmlFor="su-password">
+          <label className="sr-only" htmlFor="rp-password">
             {t("signupPlaceholderPassword")}
           </label>
           <input
             ref={inputRef}
-            id="su-password"
+            id="rp-password"
             type="password"
             autoComplete="new-password"
             placeholder={t("signupPlaceholderPassword")}
@@ -284,13 +320,13 @@ export default function SignUpWizard({
       title: t("signupConfirmTitle"),
       subtitle: t("signupConfirmSubtitle"),
       form: (
-        <form onSubmit={handleConfirmSubmit} className="mt-6 space-y-4">
-          <label className="sr-only" htmlFor="su-confirm">
+        <form onSubmit={handleConfirmNext} className="mt-6 space-y-4">
+          <label className="sr-only" htmlFor="rp-confirm">
             {t("signupPlaceholderConfirm")}
           </label>
           <input
             ref={inputRef}
-            id="su-confirm"
+            id="rp-confirm"
             type="password"
             autoComplete="new-password"
             placeholder={t("signupPlaceholderConfirm")}
@@ -311,7 +347,89 @@ export default function SignUpWizard({
             disabled={!confirmOk || submitting}
             className={primaryBtn(confirmOk)}
           >
-            {submitting ? t("signupCreating") : t("signupCreateAccount")}
+            {t("signupContinue")}
+          </button>
+        </form>
+      ),
+    },
+    restaurant: {
+      title: t("partnerSignupRestaurantTitle"),
+      subtitle: t("partnerSignupRestaurantSubtitle"),
+      form: (
+        <form onSubmit={handleRestaurantSubmit} className="mt-6 space-y-4">
+          <div>
+            <label
+              className="mb-1 block text-left text-sm font-medium text-brand-dark"
+              htmlFor="rp-restaurant-name"
+            >
+              {t("partnerSignupRestaurantNameLabel")}
+            </label>
+            <input
+              ref={inputRef}
+              id="rp-restaurant-name"
+              type="text"
+              autoComplete="organization"
+              placeholder={t("partnerSignupRestaurantNamePlaceholder")}
+              value={restaurantName}
+              onChange={(e) => {
+                setRestaurantName(e.target.value);
+                setFieldError("");
+              }}
+              className={inputClass}
+              maxLength={200}
+            />
+          </div>
+          <div>
+            <label
+              className="mb-1 block text-left text-sm font-medium text-brand-dark"
+              htmlFor="rp-category"
+            >
+              {t("partnerSignupCategoryLabel")}
+            </label>
+            <input
+              id="rp-category"
+              type="text"
+              placeholder={t("partnerSignupCategoryPlaceholder")}
+              value={primaryCategory}
+              onChange={(e) => {
+                setPrimaryCategory(e.target.value);
+                setFieldError("");
+              }}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label
+              className="mb-1 block text-left text-sm font-medium text-brand-dark"
+              htmlFor="rp-phone"
+            >
+              {t("partnerSignupPhoneLabel")}
+            </label>
+            <input
+              id="rp-phone"
+              type="tel"
+              autoComplete="tel"
+              placeholder={t("partnerSignupPhonePlaceholder")}
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value);
+                setFieldError("");
+              }}
+              className={inputClass}
+              maxLength={40}
+            />
+          </div>
+          {fieldError ? (
+            <p className="text-sm text-red-600" role="alert">
+              {fieldError}
+            </p>
+          ) : null}
+          <button
+            type="submit"
+            disabled={!restaurantOk || !phoneOk || submitting}
+            className={partnerAccentBtn(restaurantOk && phoneOk)}
+          >
+            {submitting ? t("signupCreating") : t("partnerSignupSubmit")}
           </button>
         </form>
       ),
@@ -351,16 +469,19 @@ export default function SignUpWizard({
             className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-neutral-200 text-brand-muted transition-colors hover:bg-neutral-50"
             aria-label="Close"
           >
-            <MdClose className="text-xl" />
+            <MdClose className="text-2xl" />
           </button>
         ) : (
           <span className="min-h-11 min-w-11" aria-hidden />
         )}
       </div>
 
-      <div className="mx-auto mb-6 flex h-24 w-full max-w-[160px] items-center justify-center rounded-2xl bg-brand-secondary/40 sm:h-28">
-        <span className="text-3xl font-bold text-brand-primary sm:text-4xl" aria-hidden>
-          GG
+      <div className="mx-auto mb-4 flex h-20 w-full max-w-[140px] items-center justify-center rounded-2xl bg-teal-50 ring-1 ring-teal-100 sm:h-24">
+        <span
+          className="text-center text-[0.65rem] font-bold uppercase leading-tight tracking-wide text-[#0f766e] sm:text-xs"
+          aria-hidden
+        >
+          {t("partnerSignupBadge")}
         </span>
       </div>
 

@@ -1,36 +1,9 @@
-import Link from "next/link";
-import Image from "next/image";
-import { FiFacebook, FiInstagram, FiMapPin, FiPhone, FiTwitter } from "react-icons/fi";
+"use client";
 
-const footerGroups = [
-  {
-    title: "Discover",
-    links: [
-      { label: "Home", href: "/" },
-      { label: "All restaurants", href: "/" },
-      { label: "Our menu", href: "/ourMenu" },
-      { label: "Popular deals", href: "/" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "About us", href: "/about" },
-      { label: "Contact", href: "/contact" },
-      { label: "Careers", href: "/contact" },
-      { label: "Partner with us", href: "/contact" },
-    ],
-  },
-  {
-    title: "Support",
-    links: [
-      { label: "Help center", href: "/contact" },
-      { label: "Terms & conditions", href: "/termsAndCondition" },
-      { label: "Privacy policy", href: "/privacyPolicy" },
-      { label: "Refund policy", href: "/refundPolicy" },
-    ],
-  },
-];
+import Image from "next/image";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import { FiFacebook, FiInstagram, FiMapPin, FiPhone, FiTwitter } from "react-icons/fi";
 
 const socialLinks = [
   { label: "Facebook", href: "https://facebook.com", icon: FiFacebook },
@@ -39,6 +12,39 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const { t } = useTranslation("common");
+  const year = new Date().getFullYear();
+
+  const footerGroups = [
+    {
+      title: t("footer.discover"),
+      links: [
+        { label: t("footer.home"), href: "/" },
+        { label: t("footer.allRestaurants"), href: "/" },
+        { label: t("footer.ourMenu"), href: "/ourMenu" },
+        { label: t("footer.popularDeals"), href: "/" },
+      ],
+    },
+    {
+      title: t("footer.company"),
+      links: [
+        { label: t("footer.aboutUs"), href: "/about" },
+        { label: t("footer.contact"), href: "/contact" },
+        { label: t("footer.careers"), href: "/contact" },
+        { label: t("footer.partnerWithUs"), href: "/contact" },
+      ],
+    },
+    {
+      title: t("footer.support"),
+      links: [
+        { label: t("footer.helpCenter"), href: "/contact" },
+        { label: t("footer.termsConditions"), href: "/termsAndCondition" },
+        { label: t("footer.privacyPolicy"), href: "/privacyPolicy" },
+        { label: t("footer.refundPolicy"), href: "/refundPolicy" },
+      ],
+    },
+  ];
+
   return (
     <footer className="border-t border-black/5 bg-white">
       <div className="mx-auto max-w-[1340px] px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
@@ -58,18 +64,17 @@ export default function Footer() {
             </Link>
 
             <p className="mt-4 max-w-md text-sm leading-6 text-brand-muted">
-              Order from your favorite local restaurants with curated deals, fast
-              delivery, and reliable service across Dhaka.
+              {t("footer.tagline")}
             </p>
 
             <div className="mt-5 space-y-2.5 text-sm text-brand-muted">
               <p className="inline-flex items-center gap-2">
                 <FiMapPin className="text-brand-primary" />
-                Gulshan Avenue, Dhaka, Bangladesh
+                {t("footer.address")}
               </p>
               <p className="inline-flex items-center gap-2">
                 <FiPhone className="text-brand-primary" />
-                +880 1234-567890
+                {t("footer.phone")}
               </p>
             </div>
 
@@ -97,7 +102,7 @@ export default function Footer() {
                 </h3>
                 <ul className="mt-3 space-y-2.5">
                   {group.links.map((link) => (
-                    <li key={link.label}>
+                    <li key={`${group.title}-${link.href}-${link.label}`}>
                       <Link
                         href={link.href}
                         className="text-sm text-brand-muted transition-colors hover:text-brand-primary"
@@ -114,7 +119,7 @@ export default function Footer() {
 
         <div className="mt-8 border-t border-black/5 pt-4">
           <p className="text-xs text-brand-muted sm:text-sm">
-            © {new Date().getFullYear()} Ganges Grill. All rights reserved.
+            {t("footer.copyright", { year })}
           </p>
         </div>
       </div>

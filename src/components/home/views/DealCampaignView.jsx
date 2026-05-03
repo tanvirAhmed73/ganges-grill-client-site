@@ -11,7 +11,7 @@ export default function DealCampaignView({
   return (
     <section className="space-y-5">
       <div className="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
-        <div className="grid gap-4 bg-gradient-to-r from-fuchsia-500 via-pink-500 to-rose-400 p-5 text-white sm:p-6 md:grid-cols-[minmax(0,1fr)_220px] md:items-center">
+        <div className="grid gap-4 bg-gradient-to-r from-brand-primary via-orange-500 to-amber-500 p-5 text-white sm:p-6 md:grid-cols-[minmax(0,1fr)_220px] md:items-center">
           <div>
             <p className="inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
               Campaign deal

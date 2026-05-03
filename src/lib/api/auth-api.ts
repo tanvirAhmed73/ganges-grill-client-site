@@ -10,6 +10,18 @@ export async function apiRegister(body: {
   return axiosPublic.post("/auth/register", body);
 }
 
+/** Creates `restaurant_owner` + linked restaurant; same OTP verification flow as register. */
+export async function apiRegisterRestaurantOwner(body: {
+  email: string;
+  password: string;
+  name: string;
+  restaurantName: string;
+  primaryCategory?: string;
+  phone?: string;
+}) {
+  return axiosPublic.post("/auth/register-restaurant-owner", body);
+}
+
 export async function apiVerifyEmail(body: { email: string; code: string }) {
   return axiosPublic.post("/auth/verify-email", body);
 }

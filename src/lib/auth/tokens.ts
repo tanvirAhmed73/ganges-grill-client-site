@@ -56,8 +56,20 @@ function pickToken(obj: Record<string, unknown>, keys: string[]): string | null 
 export function persistTokensFromResponse(data: unknown): void {
   if (!data || typeof data !== "object") return;
   const d = data as Record<string, unknown>;
-  const accessNew = pickToken(d, ["accessToken", "access_token", "token", "access"]);
-  const refreshNew = pickToken(d, ["refreshToken", "refresh_token", "refresh"]);
+
+  let accessNew = pickToken(d, ["accessToken", "access_token", "token", "access"]);
+  let refreshNew = pickToken(d, ["refreshToken", "refresh_token", "refresh"]);
+
+  /** Backend shape: `{ tokens: { accessToken, refreshToken, ... } }` */
+  const nested = d.tokens;
+  if (nested && typeof nested === "object") {
+    const t = nested as Record<string, unknown>;
+    accessNew =
+      accessNew ?? pickToken(t, ["accessToken", "access_token", "token", "access"]);
+    refreshNew =
+      refreshNew ?? pickToken(t, ["refreshToken", "refresh_token", "refresh"]);
+  }
+
   if (!accessNew && !refreshNew) return;
   const access = accessNew ?? getAccessToken();
   const refresh = refreshNew ?? getRefreshToken();

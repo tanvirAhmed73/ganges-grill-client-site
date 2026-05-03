@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineGlobal } from "react-icons/ai";
 import { FiCheck, FiChevronDown } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 import { useLocale, type AppLocale } from "@/contexts/locale-context";
 
 const OPTIONS: { value: AppLocale; label: string }[] = [
@@ -20,13 +21,17 @@ type LanguageSwitcherProps = {
   /** Called after selecting a language (e.g. close mobile drawer). */
   onNavigate?: () => void;
   className?: string;
+  /** Tighter pill to sit beside account chip (foodpanda-style header). */
+  compact?: boolean;
 };
 
 export default function LanguageSwitcher({
   variant = "dropdown",
   onNavigate,
   className = "",
+  compact = false,
 }: LanguageSwitcherProps) {
+  const { t } = useTranslation("common");
   const { locale, setLocale } = useLocale();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -84,7 +89,7 @@ export default function LanguageSwitcher({
     return (
       <div className={`rounded-2xl border border-black/[0.06] bg-white p-2 shadow-md ring-1 ring-black/5 ${className}`}>
         <p className="mb-1 px-2 text-[0.65rem] font-semibold uppercase tracking-wide text-brand-muted">
-          Language
+          {t("language")}
         </p>
         <div className="space-y-0.5" role="listbox">
           {optionButtons}
@@ -98,15 +103,22 @@ export default function LanguageSwitcher({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-2 text-sm font-bold text-brand-dark outline-none ring-brand-primary ring-offset-2 ring-offset-brand-background hover:bg-brand-secondary/40 focus-visible:ring-2"
+        className={
+          compact
+            ? "flex cursor-pointer items-center gap-1 rounded-full border border-black/[0.08] bg-white px-2 py-1.5 text-xs font-bold text-brand-dark shadow-sm outline-none hover:bg-neutral-50 sm:gap-1.5 sm:px-2.5 sm:py-2 sm:text-sm"
+            : "flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-2 text-sm font-bold text-brand-dark outline-none ring-brand-primary ring-offset-2 ring-offset-brand-background hover:bg-brand-secondary/40 focus-visible:ring-2"
+        }
         aria-expanded={open}
         aria-haspopup="listbox"
-        aria-label="Choose language"
+        aria-label={t("chooseLanguage")}
       >
-        <AiOutlineGlobal className="text-lg text-brand-dark" aria-hidden />
+        <AiOutlineGlobal
+          className={compact ? "text-base text-brand-primary sm:text-lg" : "text-lg text-brand-dark"}
+          aria-hidden
+        />
         <span>{triggerCode(locale)}</span>
         <FiChevronDown
-          className={`text-lg transition-transform duration-200 ${
+          className={`text-base transition-transform duration-200 sm:text-lg ${
             open ? "-rotate-180 text-brand-primary" : "text-brand-muted"
           }`}
           aria-hidden

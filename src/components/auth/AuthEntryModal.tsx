@@ -6,14 +6,17 @@
 
 import type { MouseEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import AuthGateModalEntry from "@/components/auth/AuthGateModalEntry";
 import LoginEmailPasswordFlow from "@/components/auth/LoginEmailPasswordFlow";
+import RestaurantPartnerSignUpWizard from "@/components/auth/RestaurantPartnerSignUpWizard";
 import SignUpEntryFlow from "@/components/auth/SignUpEntryFlow";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 
-type Phase = "entry" | "login" | "signup";
+type Phase = "entry" | "login" | "signup" | "partner";
 
 export default function AuthEntryModal() {
+  const { t } = useTranslation("auth");
   const { isOpen, closeAuthModal } = useAuthModal();
   const [phase, setPhase] = useState<Phase>("entry");
 
@@ -46,10 +49,12 @@ export default function AuthEntryModal() {
 
   const dialogLabel =
     phase === "entry"
-      ? "Sign in or sign up"
+      ? t("dialogSignInOrUp")
       : phase === "login"
-        ? "Log in"
-        : "Create account";
+        ? t("dialogLogIn")
+        : phase === "partner"
+          ? t("dialogRestaurantPartner")
+          : t("dialogCreateAccount");
 
   return (
     <div
@@ -74,6 +79,7 @@ export default function AuthEntryModal() {
             onClose={closeAuthModal}
             onChooseLogin={() => setPhase("login")}
             onChooseSignUp={() => setPhase("signup")}
+            onChooseRestaurantPartner={() => setPhase("partner")}
           />
         ) : null}
 
@@ -88,6 +94,15 @@ export default function AuthEntryModal() {
         {phase === "signup" ? (
           <div className="mx-auto flex min-h-0 w-full max-w-md justify-center sm:max-w-none">
             <SignUpEntryFlow
+              onBackToEntry={() => setPhase("entry")}
+              onSwitchToLogin={() => setPhase("login")}
+            />
+          </div>
+        ) : null}
+
+        {phase === "partner" ? (
+          <div className="mx-auto flex min-h-0 w-full max-w-md justify-center sm:max-w-none">
+            <RestaurantPartnerSignUpWizard
               onBackToEntry={() => setPhase("entry")}
               onSwitchToLogin={() => setPhase("login")}
             />

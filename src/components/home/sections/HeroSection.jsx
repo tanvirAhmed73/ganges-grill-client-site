@@ -45,7 +45,7 @@ export default function HeroSection({ variant = "delivery" }) {
   }
 
   return (
-    <section className="overflow-hidden rounded-3xl bg-gradient-to-r from-brand-secondary/75 via-rose-100 to-pink-100 p-5 shadow-sm sm:p-7">
+    <section className="overflow-hidden rounded-3xl bg-gradient-to-r from-brand-secondary/80 via-brand-background to-brand-secondary/50 p-5 shadow-sm sm:p-7">
       <div className="grid items-center gap-5 md:grid-cols-[minmax(0,1fr)_220px]">
         <div>
           <h1 className="max-w-xl text-2xl font-bold leading-tight text-brand-dark sm:text-3xl">

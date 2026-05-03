@@ -38,6 +38,18 @@ module.exports = {
           /** Muted text — captions, meta, de-emphasized copy */
           muted: "#4A4A4A",
         },
+        /** Restaurant owner portal — teal/slate (distinct from customer orange) */
+        vendor: {
+          primary: "#0f766e",
+          accent: "#14b8a6",
+          surface: "#f0fdfa",
+          muted: "#64748b",
+          sidebar: "#134e4a",
+          sidebarHover: "#115e59",
+          border: "#99f6e4",
+          danger: "#dc2626",
+          ink: "#0f172a",
+        },
       },
     },
   },

@@ -47,7 +47,7 @@ export const dailyDeals = [
     subtitle: "With selected partners",
     image:
       "https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=1000&q=80",
-    bgClass: "from-fuchsia-500 to-pink-500",
+    bgClass: "from-brand-primary to-orange-600",
   },
   {
     title: "50% off",
@@ -61,14 +61,14 @@ export const dailyDeals = [
     subtitle: "Only in the app",
     image:
       "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=1000&q=80",
-    bgClass: "from-rose-500 to-pink-400",
+    bgClass: "from-amber-600 to-orange-500",
   },
   {
     title: "Dealnao",
     subtitle: "Tk 150 off this week",
     image:
       "https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=1000&q=80",
-    bgClass: "from-violet-500 to-fuchsia-500",
+    bgClass: "from-orange-600 to-amber-500",
   },
 ];
 

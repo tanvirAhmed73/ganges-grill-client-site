@@ -7,6 +7,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import type { MouseEvent } from "react";
 import { useId } from "react";
 import { AiFillStar } from "react-icons/ai";
@@ -16,13 +17,16 @@ export interface AuthGateModalEntryProps {
   onClose: () => void;
   onChooseLogin: () => void;
   onChooseSignUp: () => void;
+  onChooseRestaurantPartner: () => void;
 }
 
 export default function AuthGateModalEntry({
   onClose,
   onChooseLogin,
   onChooseSignUp,
+  onChooseRestaurantPartner,
 }: AuthGateModalEntryProps) {
+  const { t } = useTranslation("auth");
   const router = useRouter();
   const titleId = useId();
   const descId = useId();
@@ -46,10 +50,10 @@ export default function AuthGateModalEntry({
               GG
             </span>
             <span className="text-[0.65rem] font-medium uppercase tracking-wider">
-              QR code
+              {t("gateQrCode")}
             </span>
             <span className="px-2 text-[9px] leading-tight">
-              Download the Ganges Grill app
+              {t("gateDownloadApp")}
             </span>
           </div>
         </div>
@@ -57,20 +61,21 @@ export default function AuthGateModalEntry({
         <p className="flex flex-wrap items-center justify-center gap-1 text-xs text-white/90 lg:text-sm">
           <span className="font-semibold">4.3</span>
           <AiFillStar className="text-base text-brand-primary lg:text-lg" aria-hidden />
-          <span className="text-white/70">on 4.8M+ ratings</span>
+          <span className="text-white/70">{t("gateRatings")}</span>
         </p>
 
         <h3 className="text-base font-bold leading-snug lg:text-2xl">
-          Download the app for{" "}
-          <span className="text-brand-primary">40% off</span> your first order
+          {t("gatePromoTitle")}{" "}
+          <span className="text-brand-primary">{t("gatePromoHighlight")}</span>{" "}
+          {t("gatePromoSuffix")}
         </h3>
 
         <div className="grid grid-cols-2 gap-2 lg:flex lg:flex-wrap lg:justify-center lg:gap-3">
           <span className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-white/80 bg-transparent px-3 py-2 text-[0.65rem] font-semibold text-white lg:min-w-[130px] lg:text-xs">
-            App Store
+            {t("gateAppStore")}
           </span>
           <span className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-white/80 bg-transparent px-3 py-2 text-[0.65rem] font-semibold text-white lg:min-w-[130px] lg:text-xs">
-            Google Play
+            {t("gateGooglePlay")}
           </span>
         </div>
       </aside>
@@ -80,7 +85,7 @@ export default function AuthGateModalEntry({
           type="button"
           onClick={onClose}
           className="absolute right-3 top-3 inline-flex min-h-11 min-w-11 touch-manipulation items-center justify-center rounded-full text-brand-muted transition-colors hover:bg-neutral-100 hover:text-brand-dark sm:right-4 sm:top-4"
-          aria-label="Close"
+          aria-label={t("gateClose")}
         >
           <MdClose className="text-2xl" />
         </button>
@@ -90,10 +95,10 @@ export default function AuthGateModalEntry({
             id={titleId}
             className="text-xl font-bold tracking-tight text-brand-dark sm:text-2xl lg:text-3xl"
           >
-            Welcome!
+            {t("gateWelcome")}
           </h2>
           <p id={descId} className="mt-1.5 text-sm text-brand-muted sm:mt-2">
-            Sign up or log in with your email
+            {t("gateSubtitle")}
           </p>
         </div>
 
@@ -103,7 +108,7 @@ export default function AuthGateModalEntry({
             onClick={onChooseLogin}
             className="flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl bg-brand-primary px-4 py-3 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95 active:opacity-90 sm:py-3.5"
           >
-            Log in
+            {t("gateLogIn")}
           </button>
 
           <button
@@ -111,26 +116,34 @@ export default function AuthGateModalEntry({
             onClick={onChooseSignUp}
             className="flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl border-2 border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-brand-dark transition-colors hover:bg-neutral-50 active:bg-neutral-50 sm:py-3.5"
           >
-            Sign up
+            {t("gateSignUp")}
+          </button>
+
+          <button
+            type="button"
+            onClick={onChooseRestaurantPartner}
+            className="flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl border-2 border-teal-200 bg-teal-50/80 px-4 py-3 text-sm font-semibold text-[#0f766e] transition-colors hover:bg-teal-100/90 active:bg-teal-100 sm:py-3.5"
+          >
+            {t("gateSignUpPartner")}
           </button>
         </div>
 
         <p className="mt-6 text-center text-[0.65rem] leading-relaxed text-brand-muted sm:mt-8 sm:text-xs lg:mt-auto">
-          By signing up, you agree to our{" "}
+          {t("gateTermsPrefix")}{" "}
           <Link
             href="/contact"
             className="font-medium text-brand-primary underline-offset-2 hover:underline"
             onClick={goContact}
           >
-            Terms and Conditions
+            {t("gateTermsLink")}
           </Link>{" "}
-          and{" "}
+          {t("gateAnd")}{" "}
           <Link
             href="/contact"
             className="font-medium text-brand-primary underline-offset-2 hover:underline"
             onClick={goContact}
           >
-            Privacy Policy
+            {t("gatePrivacyLink")}
           </Link>
           .
         </p>

@@ -13,6 +13,7 @@ import {
   apiLogout,
   apiLogoutAll,
   apiRegister,
+  apiRegisterRestaurantOwner,
   apiResendVerification,
   apiVerifyEmail,
 } from "@/lib/api/auth-api";
@@ -26,15 +27,32 @@ import {
 
 export const AuthContext = createContext(null);
 
-function normalizeUser(data) {
+/** API often wraps profile as `{ user: { ... } }` (see GET /auth/me). */
+function unwrapUserPayload(data) {
   if (!data || typeof data !== "object") return null;
-  const email = data.email ?? "";
-  const name = data.name ?? data.displayName ?? "";
+  if (
+    Object.prototype.hasOwnProperty.call(data, "user") &&
+    data.user &&
+    typeof data.user === "object"
+  ) {
+    return data.user;
+  }
+  return data;
+}
+
+function normalizeUser(data) {
+  const raw = unwrapUserPayload(data);
+  if (!raw || typeof raw !== "object") return null;
+  const email = raw.email ?? "";
+  const name = raw.name ?? raw.displayName ?? "";
   return {
-    ...data,
+    ...raw,
     email,
     displayName: String(name || email.split("@")[0] || "User"),
-    uid: data.id ?? data.sub ?? email,
+    uid: raw.id ?? raw.sub ?? email,
+    emailVerified:
+      typeof raw.emailVerified === "boolean" ? raw.emailVerified : undefined,
+    role: raw.role,
   };
 }
 
@@ -88,6 +106,7 @@ export default function AuthProvider({ children }) {
         const { data } = await apiLogin({ email, password });
         persistTokensFromResponse(data);
         await hydrateUser();
+        return normalizeUser(data);
       } finally {
         setLoading(false);
       }
@@ -98,6 +117,29 @@ export default function AuthProvider({ children }) {
   const register = useCallback(async ({ email, password, name }) => {
     await apiRegister({ email, password, name });
   }, []);
+
+  const registerRestaurantOwner = useCallback(
+    async ({
+      email,
+      password,
+      name,
+      restaurantName,
+      primaryCategory,
+      phone,
+    }) => {
+      await apiRegisterRestaurantOwner({
+        email,
+        password,
+        name,
+        restaurantName,
+        ...(primaryCategory?.trim()
+          ? { primaryCategory: primaryCategory.trim() }
+          : {}),
+        ...(phone?.trim() ? { phone: phone.trim() } : {}),
+      });
+    },
+    []
+  );
 
   const verifyEmail = useCallback(
     async (email, code) => {
@@ -149,6 +191,7 @@ export default function AuthProvider({ children }) {
       loading,
       signIn,
       register,
+      registerRestaurantOwner,
       verifyEmail,
       resendVerification,
       logOut,
@@ -160,6 +203,7 @@ export default function AuthProvider({ children }) {
       loading,
       signIn,
       register,
+      registerRestaurantOwner,
       verifyEmail,
       resendVerification,
       logOut,

@@ -16,6 +16,7 @@ import {
 } from "react";
 import { IoArrowBack, IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 import useAuth from "@/hooks/useAuth";
@@ -125,6 +126,7 @@ export default function LoginEmailPasswordFlow({
 }: {
   onLeaveLoginFlow?: () => void;
 } = {}) {
+  const { t } = useTranslation("auth");
   const titleId = useId();
   const descId = useId();
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -155,21 +157,26 @@ export default function LoginEmailPasswordFlow({
     return () => cancelAnimationFrame(t);
   }, [step]);
 
-  const finishLogin = useCallback(() => {
-    const dest =
-      returnAfterLogin && returnAfterLogin.startsWith("/")
-        ? returnAfterLogin
-        : "/";
-    closeAuthModal();
-    router.push(dest);
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "You're signed in",
-      showConfirmButton: false,
-      timer: 1600,
-    });
-  }, [closeAuthModal, returnAfterLogin, router]);
+  const finishLogin = useCallback(
+    (loggedInUser?: { role?: string } | null) => {
+      let dest = "/";
+      if (returnAfterLogin && returnAfterLogin.startsWith("/")) {
+        dest = returnAfterLogin;
+      } else if (loggedInUser?.role === "restaurant_owner") {
+        dest = "/vendor";
+      }
+      closeAuthModal();
+      router.push(dest);
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: t("loginSignedInToast"),
+        showConfirmButton: false,
+        timer: 1600,
+      });
+    },
+    [closeAuthModal, returnAfterLogin, router, t]
+  );
 
   const handleEmailContinue = (e: FormEvent) => {
     e.preventDefault();
@@ -184,8 +191,8 @@ export default function LoginEmailPasswordFlow({
     setSubmitting(true);
     setFieldError("");
     try {
-      await auth.signIn(email.trim(), password);
-      finishLogin();
+      const loggedIn = await auth.signIn(email.trim(), password);
+      finishLogin(loggedIn ?? undefined);
     } catch (err) {
       setFieldError(apiErrorMessage(err));
     } finally {
@@ -214,7 +221,9 @@ export default function LoginEmailPasswordFlow({
           type="button"
           onClick={goBack}
           className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-brand-dark transition-colors hover:bg-neutral-100"
-          aria-label={step === "password" ? "Back" : "Close"}
+          aria-label={
+            step === "password" ? t("loginAriaBack") : t("loginClose")
+          }
         >
           <IoArrowBack className="text-xl" />
         </button>
@@ -222,7 +231,7 @@ export default function LoginEmailPasswordFlow({
           type="button"
           onClick={closeAuthModal}
           className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-neutral-200 text-brand-muted transition-colors hover:bg-neutral-50"
-          aria-label="Close"
+          aria-label={t("loginClose")}
         >
           <MdClose className="text-xl" />
         </button>
@@ -235,25 +244,25 @@ export default function LoginEmailPasswordFlow({
             id={titleId}
             className="text-center text-2xl font-bold tracking-tight text-brand-dark"
           >
-            What&apos;s your email?
+            {t("loginWhatsEmail")}
           </h2>
           <p
             id={descId}
             className="mt-2 text-center text-sm text-brand-muted"
           >
-            We&apos;ll sign you in with your password
+            {t("loginEmailHint")}
           </p>
 
           <form onSubmit={handleEmailContinue} className="mt-6 space-y-4">
             <label className="sr-only" htmlFor="login-email">
-              Email
+              {t("loginPlaceholderEmail")}
             </label>
             <input
               ref={emailInputRef}
               id="login-email"
               type="email"
               autoComplete="email"
-              placeholder="Email"
+              placeholder={t("loginPlaceholderEmail")}
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -276,26 +285,26 @@ export default function LoginEmailPasswordFlow({
                   : "cursor-not-allowed bg-neutral-200 text-white"
               }`}
             >
-              Continue
+              {t("loginContinue")}
             </button>
           </form>
 
           <p className="mt-8 text-center text-[0.7rem] leading-relaxed text-brand-muted sm:text-xs">
-            By continuing you agree to our{" "}
+            {t("loginTermsPrefix")}{" "}
             <Link
               href="/contact"
               className="font-medium text-brand-primary underline-offset-2 hover:underline"
               onClick={closeAuthModal}
             >
-              Terms
+              {t("loginTermsLink")}
             </Link>{" "}
-            and{" "}
+            {t("gateAnd")}{" "}
             <Link
               href="/contact"
               className="font-medium text-brand-primary underline-offset-2 hover:underline"
               onClick={closeAuthModal}
             >
-              Privacy Policy
+              {t("loginPrivacyLink")}
             </Link>
             .
           </p>
@@ -307,14 +316,13 @@ export default function LoginEmailPasswordFlow({
             id={titleId}
             className="text-center text-2xl font-bold tracking-tight text-brand-dark"
           >
-            Welcome back!
+            {t("loginWelcomeBack")}
           </h2>
           <p
             id={descId}
             className="mt-3 text-center text-sm leading-relaxed text-brand-muted"
           >
-            Enter your password. Your email must be verified before you can log
-            in.
+            {t("loginPasswordHint")}
           </p>
           <p className="mt-2 text-center text-sm font-semibold text-brand-dark">
             {email.trim()}
@@ -323,14 +331,14 @@ export default function LoginEmailPasswordFlow({
           <form onSubmit={handlePasswordSubmit} className="mt-6 space-y-4">
             <div className="relative">
               <label className="sr-only" htmlFor="login-password">
-                Password
+                {t("loginPlaceholderPassword")}
               </label>
               <input
                 ref={passwordInputRef}
                 id="login-password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
-                placeholder="Password"
+                placeholder={t("loginPlaceholderPassword")}
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -342,7 +350,11 @@ export default function LoginEmailPasswordFlow({
                 type="button"
                 onClick={() => setShowPassword((s) => !s)}
                 className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 text-brand-primary hover:bg-brand-secondary/40"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-label={
+                  showPassword
+                    ? t("loginAriaHidePassword")
+                    : t("loginAriaShowPassword")
+                }
               >
                 {showPassword ? (
                   <IoEyeOffOutline className="text-xl" />
@@ -367,17 +379,17 @@ export default function LoginEmailPasswordFlow({
                   : "cursor-not-allowed bg-neutral-200 text-white"
               }`}
             >
-              {submitting ? "Signing in…" : "Log in"}
+              {submitting ? t("loginSigningIn") : t("loginLogInButton")}
             </button>
 
             <p className="text-center text-sm text-brand-muted">
-              New here?{" "}
+              {t("loginNewHere")}{" "}
               <Link
                 href={`/verify-email?email=${encodeURIComponent(email.trim())}`}
                 className="font-semibold text-brand-primary underline-offset-2 hover:underline"
                 onClick={closeAuthModal}
               >
-                Verify your email
+                {t("loginVerifyEmail")}
               </Link>
             </p>
           </form>

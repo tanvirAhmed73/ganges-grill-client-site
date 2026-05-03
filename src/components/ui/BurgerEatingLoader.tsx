@@ -23,8 +23,8 @@ export default function BurgerEatingLoader() {
             <div className="hair-side-right absolute -right-2 top-4 h-8 w-4 rounded-r-full bg-[#2f2436]" />
             <div className="eye-left absolute left-4 top-6 h-2 w-2 rounded-full bg-[#2b1f31]" />
             <div className="eye-right absolute right-4 top-6 h-2 w-2 rounded-full bg-[#2b1f31]" />
-            <div className="blush absolute left-3 top-8 h-2 w-3 rounded-full bg-pink-300/70" />
-            <div className="blush absolute right-3 top-8 h-2 w-3 rounded-full bg-pink-300/70" />
+            <div className="blush absolute left-3 top-8 h-2 w-3 rounded-full bg-brand-secondary/80" />
+            <div className="blush absolute right-3 top-8 h-2 w-3 rounded-full bg-brand-secondary/80" />
             <div className="jaw absolute left-1/2 top-9 h-4 w-8 -translate-x-1/2 rounded-b-full bg-[#f6ccab]" />
             <div className="mouth absolute left-1/2 top-10 h-1.5 w-5 -translate-x-1/2 rounded-full bg-[#ac4f57]" />
           </div>

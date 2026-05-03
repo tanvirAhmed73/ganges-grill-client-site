@@ -1,8 +1,10 @@
 "use client";
 
+import "@/i18n/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import AuthEntryModal from "@/components/auth/AuthEntryModal";
+import PendingVerificationGate from "@/components/auth/PendingVerificationGate";
 import TopPromoBanner from "@/components/layout/top-promo/TopPromoBanner";
 import { AuthModalProvider } from "@/contexts/auth-modal-context";
 import { LocaleProvider } from "@/contexts/locale-context";
@@ -21,6 +23,7 @@ export default function AppProviders({ children }: { children: ReactNode }) {
             {/* Anonymous-only promo; must stay inside AuthProvider */}
             <TopPromoBanner />
             <AuthEntryModal />
+            <PendingVerificationGate />
             {children}
           </AuthModalProvider>
         </AuthProvider>

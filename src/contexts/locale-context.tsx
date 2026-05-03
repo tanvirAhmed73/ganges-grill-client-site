@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { syncI18nLanguage } from "@/i18n/client";
 
 export type AppLocale = "en" | "bn";
 
@@ -39,6 +40,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     const next = readStoredLocale();
     setLocaleState(next);
     document.documentElement.lang = next === "bn" ? "bn" : "en";
+    syncI18nLanguage(next);
   }, []);
 
   const setLocale = useCallback((next: AppLocale) => {
@@ -49,6 +51,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       /* ignore */
     }
     document.documentElement.lang = next === "bn" ? "bn" : "en";
+    syncI18nLanguage(next);
   }, []);
 
   const value = useMemo<LocaleContextValue>(
