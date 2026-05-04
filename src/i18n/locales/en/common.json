@@ -14,6 +14,7 @@
     "logIn": "Log in",
     "signUpFreeDelivery": "Sign up for free delivery",
     "favorites": "Favorites",
+    "wishlist": "Wishlist",
     "shoppingCart": "Shopping cart",
     "shoppingCartWithItems": "Shopping cart, {{count}} items",
     "orderingOptions": "Ordering options",

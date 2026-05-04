@@ -1,14 +1,14 @@
+import CustomerPlaceholderPage from "@/components/ui/CustomerPlaceholderPage";
+
 export const metadata = {
   title: "GG Rewards",
 };
 
 export default function RewardsPage() {
   return (
-    <div className="mx-auto max-w-lg px-4 py-16 text-center">
-      <h1 className="text-2xl font-bold tracking-tight text-brand-dark">GG Rewards</h1>
-      <p className="mt-3 text-sm leading-relaxed text-brand-muted">
-        Earn points on orders and unlock rewards — coming soon.
-      </p>
-    </div>
+    <CustomerPlaceholderPage
+      title="GG Rewards"
+      description="Earn points on every order and unlock exclusive rewards. We’ll turn this on as soon as the rewards program is live."
+    />
   );
 }

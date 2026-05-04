@@ -3,7 +3,11 @@ import SectionTitle from "@/components/home/sections/SectionTitle";
 export default function TopBrandsSection({ topBrands }) {
   return (
     <section>
-      <SectionTitle title="Top brands" actionLabel="View all" />
+      <SectionTitle
+        title="Top brands"
+        actionLabel="View all"
+        actionHref="/order/popular"
+      />
       <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-1">
         {topBrands.map((brand) => (
           <button

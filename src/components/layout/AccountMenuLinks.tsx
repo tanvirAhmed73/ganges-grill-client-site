@@ -6,6 +6,7 @@ import {
   MdAccountBalanceWallet,
   MdConfirmationNumber,
   MdEmojiEvents,
+  MdFavoriteBorder,
   MdHelpOutline,
   MdLogout,
   MdOutlineStorefront,
@@ -70,6 +71,7 @@ export default function AccountMenuLinks({
           <span>{t("nav.vendorPortal")}</span>
         </Link>
       ) : null}
+      <Item href="/wishlist" icon={MdFavoriteBorder} labelKey="nav.wishlist" />
       <Item href="/wallet" icon={MdAccountBalanceWallet} labelKey="nav.ggPay" />
       <Item
         href="/contact"
@@ -79,7 +81,7 @@ export default function AccountMenuLinks({
       <Item href="/orders" icon={MdReceiptLong} labelKey="nav.ordersReorder" />
       <Item href="/dashboard" icon={HiOutlineUserCircle} labelKey="nav.profile" />
       <Item
-        href="/dashboard/cart"
+        href="/cart"
         icon={MdShoppingBag}
         labelKey="nav.myCart"
       />

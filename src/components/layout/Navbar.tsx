@@ -221,9 +221,9 @@ export default function Navbar() {
                 <LanguageSwitcher className="shrink-0" compact />
 
                 <Link
-                  href="/ourMenu"
+                  href="/wishlist"
                   className="inline-flex shrink-0 rounded-full p-2 text-brand-muted transition-colors hover:bg-brand-secondary/45 hover:text-brand-primary"
-                  aria-label={t("nav.favorites")}
+                  aria-label={t("nav.wishlist")}
                 >
                   <AiOutlineHeart className="text-xl sm:text-2xl" />
                 </Link>
@@ -250,7 +250,7 @@ export default function Navbar() {
             )}
 
             <Link
-              href="/dashboard/cart"
+              href="/cart"
               className={`relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full sm:h-11 sm:w-11 ${
                 marketplaceLoggedIn
                   ? "bg-brand-secondary/40 text-brand-dark shadow-sm ring-1 ring-brand-secondary/60 transition-colors hover:bg-brand-secondary/60"

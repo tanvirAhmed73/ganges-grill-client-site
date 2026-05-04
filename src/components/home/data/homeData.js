@@ -74,6 +74,7 @@ export const dailyDeals = [
 
 export const featuredRestaurants = [
   {
+    slug: "ma-biryani-gulshan",
     name: "Ma Biryani - Gulshan",
     category: "Rice, Biryani",
     eta: "25 min",
@@ -82,6 +83,7 @@ export const featuredRestaurants = [
       "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1000&q=80",
   },
   {
+    slug: "rice-on-fire",
     name: "Rice on Fire",
     category: "Asian, Rice Bowl",
     eta: "30 min",
@@ -90,6 +92,7 @@ export const featuredRestaurants = [
       "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1000&q=80",
   },
   {
+    slug: "shawarma-n-kebab",
     name: "Shawarma N Kebab",
     category: "Middle Eastern",
     eta: "35 min",
@@ -98,6 +101,7 @@ export const featuredRestaurants = [
       "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=1000&q=80",
   },
   {
+    slug: "arrowhead-grill",
     name: "Arrowhead Grill",
     category: "BBQ, Grill",
     eta: "30 min",
@@ -109,6 +113,7 @@ export const featuredRestaurants = [
 
 export const dealNaoRestaurants = [
   {
+    slug: "aarash",
     name: "AArash",
     category: "Bangladeshi",
     eta: "18 min",
@@ -117,6 +122,7 @@ export const dealNaoRestaurants = [
       "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1000&q=80",
   },
   {
+    slug: "burger-xpress-dealnao",
     name: "Burger Xpress",
     category: "Burger",
     eta: "20 min",
@@ -125,6 +131,7 @@ export const dealNaoRestaurants = [
       "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=1000&q=80",
   },
   {
+    slug: "sultans-dine",
     name: "Sultan's Dine",
     category: "Biryani, Grill",
     eta: "26 min",
@@ -133,6 +140,7 @@ export const dealNaoRestaurants = [
       "https://images.unsplash.com/photo-1534939561126-855b8675edd7?auto=format&fit=crop&w=1000&q=80",
   },
   {
+    slug: "bhoj-fry",
     name: "Bhoj Fry",
     category: "Fast Food",
     eta: "24 min",
@@ -144,6 +152,7 @@ export const dealNaoRestaurants = [
 
 export const fastDeliveryRestaurants = [
   {
+    slug: "care-cafe",
     name: "Care Cafe",
     category: "Cafe, Bakery",
     eta: "15 min",
@@ -152,6 +161,7 @@ export const fastDeliveryRestaurants = [
       "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1000&q=80",
   },
   {
+    slug: "kacchi-bhai",
     name: "Kacchi Bhai",
     category: "Bangladeshi",
     eta: "17 min",
@@ -160,6 +170,7 @@ export const fastDeliveryRestaurants = [
       "https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=1000&q=80",
   },
   {
+    slug: "burger-xpress-fast",
     name: "Burger Xpress",
     category: "Burgers",
     eta: "19 min",
@@ -168,6 +179,7 @@ export const fastDeliveryRestaurants = [
       "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=1000&q=80",
   },
   {
+    slug: "leto-food",
     name: "Leto Food",
     category: "Snacks",
     eta: "20 min",

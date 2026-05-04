@@ -137,7 +137,11 @@ export default function HomeView({ serviceMode = "delivery" }) {
                 <AppPromoCard />
 
                 <section>
-                  <SectionTitle title="All restaurants" actionLabel="Browse all" />
+                  <SectionTitle
+                    title="All restaurants"
+                    actionLabel="Browse all"
+                    actionHref="/order/popular"
+                  />
                   <div className="grid grid-flow-col auto-cols-[78%] gap-3 overflow-x-auto pb-1 sm:auto-cols-[45%] xl:grid-flow-row xl:grid-cols-3 xl:overflow-visible">
                     {allRestaurants.map((restaurant, index) => (
                       <RestaurantCard

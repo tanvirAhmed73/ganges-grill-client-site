@@ -1,8 +1,10 @@
 "use client";
 
 import { Suspense, type ReactNode } from "react";
+import CartFloatingBar from "@/components/layout/CartFloatingBar";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+import SiteMainPadding from "@/components/layout/SiteMainPadding";
 import BurgerEatingLoader from "@/components/ui/BurgerEatingLoader";
 import useAuth from "@/hooks/useAuth";
 
@@ -27,8 +29,11 @@ export default function SiteShell({ children }: { children: ReactNode }) {
       <Suspense fallback={<NavbarFallback />}>
         <Navbar />
       </Suspense>
-      {children}
-      <Footer />
+      <SiteMainPadding>
+        {children}
+        <Footer />
+      </SiteMainPadding>
+      <CartFloatingBar />
     </div>
   );
 }
