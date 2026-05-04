@@ -27,7 +27,9 @@ export default function CuisineResultsView({
         <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-xl font-semibold text-brand-dark sm:text-2xl">
-              {results.length}+ restaurants for {selectedCuisine}
+              {results.length === 0
+                ? `No restaurants for ${selectedCuisine}`
+                : `${results.length} ${results.length === 1 ? "restaurant" : "restaurants"} for ${selectedCuisine}`}
             </h2>
             <p className="mt-1 text-sm text-brand-muted">
               Explore popular places near your selected delivery location.
@@ -47,17 +49,23 @@ export default function CuisineResultsView({
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {results.map((restaurant, index) => (
-          <RestaurantCard
-            key={restaurant.id}
-            restaurant={restaurant}
-            className="h-full [&>div:first-child]:h-32 sm:[&>div:first-child]:h-36"
-            serviceMode={serviceMode}
-            listIndex={index}
-          />
-        ))}
-      </div>
+      {results.length === 0 ? (
+        <p className="rounded-2xl border border-dashed border-black/15 bg-white px-6 py-12 text-center text-sm text-brand-muted">
+          No restaurants match this cuisine yet. Try another cuisine or clear the filter.
+        </p>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {results.map((restaurant, index) => (
+            <RestaurantCard
+              key={restaurant.id}
+              restaurant={restaurant}
+              className="h-full [&>div:first-child]:h-32 sm:[&>div:first-child]:h-36"
+              serviceMode={serviceMode}
+              listIndex={index}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

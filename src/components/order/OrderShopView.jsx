@@ -58,10 +58,14 @@ export default function OrderShopView({ categorySlug }) {
     ? categorySlug
     : DEFAULT_SHOP_CATEGORY;
 
-  const categoryItems = useMemo(
-    () => menu.filter((item) => item.category === activeCategory),
-    [menu, activeCategory]
-  );
+  const categoryItems = useMemo(() => {
+    return menu.filter((item) => {
+      const cat = String(item.category ?? "other")
+        .trim()
+        .toLowerCase();
+      return cat === activeCategory;
+    });
+  }, [menu, activeCategory]);
 
   const filteredMenu = useMemo(() => {
     if (!q) return categoryItems;

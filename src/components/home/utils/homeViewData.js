@@ -7,14 +7,10 @@ export function buildCuisineResults(restaurants, selectedCuisine, cuisineMap) {
     return normalizedKeywords.some((keyword) => haystack.includes(keyword));
   });
 
-  const base = filtered.length > 0 ? filtered : restaurants;
-
-  return Array.from({ length: 4 }).flatMap((_, index) =>
-    base.map((restaurant, itemIndex) => ({
-      ...restaurant,
-      id: `${restaurant.name}-${index}-${itemIndex}`,
-    })),
-  );
+  return filtered.map((restaurant, itemIndex) => ({
+    ...restaurant,
+    id: `${restaurant.name}-cuisine-${itemIndex}`,
+  }));
 }
 
 export function buildDealResults(restaurants, selectedDealTitle, dealMap) {
@@ -27,12 +23,8 @@ export function buildDealResults(restaurants, selectedDealTitle, dealMap) {
     return normalizedKeywords.some((keyword) => haystack.includes(keyword));
   });
 
-  const base = filtered.length > 0 ? filtered : restaurants;
-
-  return Array.from({ length: 7 }).flatMap((_, index) =>
-    base.map((restaurant, itemIndex) => ({
-      ...restaurant,
-      id: `${selectedDealTitle}-${restaurant.name}-${index}-${itemIndex}`,
-    })),
-  );
+  return filtered.map((restaurant, itemIndex) => ({
+    ...restaurant,
+    id: `${selectedDealTitle}-${restaurant.name}-deal-${itemIndex}`,
+  }));
 }

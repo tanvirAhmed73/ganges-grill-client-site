@@ -20,20 +20,30 @@ export default function ShopSearchBar({ basePath, className = "" }: ShopSearchBa
     setValue(searchParams.get("q") ?? "");
   }, [searchParams]);
 
-  const apply = useCallback(
+  const pushQuery = useCallback(
     (q: string) => {
       const params = new URLSearchParams();
       const trimmed = q.trim();
       if (trimmed) params.set("q", trimmed);
       const qs = params.toString();
-      router.push(qs ? `${basePath}?${qs}` : basePath, { scroll: false });
+      router.replace(qs ? `${basePath}?${qs}` : basePath, { scroll: false });
     },
     [basePath, router]
   );
 
+  /** Keep URL in sync while typing so OrderShopView’s `q` filter updates without pressing Search */
+  useEffect(() => {
+    const trimmed = value.trim();
+    const urlQ = (searchParams.get("q") || "").trim();
+    if (trimmed === urlQ) return;
+
+    const id = window.setTimeout(() => pushQuery(value), 280);
+    return () => window.clearTimeout(id);
+  }, [value, pushQuery, searchParams]);
+
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    apply(value);
+    pushQuery(value);
   };
 
   return (

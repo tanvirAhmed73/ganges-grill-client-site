@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import OrderShopView from "@/components/order/OrderShopView";
+import SitePageSkeleton from "@/components/ui/skeletons/SitePageSkeleton";
 import {
   DEFAULT_SHOP_CATEGORY,
   isShopCategoryId,
@@ -11,21 +12,7 @@ export const metadata = {
 };
 
 function OrderFallback() {
-  return (
-    <div className="min-h-[50vh] bg-brand-background">
-      <div className="mx-auto max-w-6xl px-4 py-12">
-        <div className="mb-8 h-48 animate-pulse rounded-2xl bg-brand-secondary/40" />
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div
-              key={i}
-              className="h-80 animate-pulse rounded-2xl bg-brand-secondary/30"
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  return <SitePageSkeleton />;
 }
 
 export default function OrderPage({ params }) {

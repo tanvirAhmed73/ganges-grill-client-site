@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { FiSearch } from "react-icons/fi";
 import PageAndMenuCover from "@/components/ui/PageAndMenuCover";
 import ProductCard from "@/components/shop/ProductCard";
@@ -9,8 +10,13 @@ import useMenu from "@/hooks/useMenu";
 import { SHOP_CATEGORIES } from "@/lib/shop/categories";
 
 export default function OurMenuView() {
+  const searchParams = useSearchParams();
   const [menu, loading] = useMenu();
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(() => searchParams.get("q") ?? "");
+
+  useEffect(() => {
+    setQ(searchParams.get("q") ?? "");
+  }, [searchParams]);
 
   const qLower = q.trim().toLowerCase();
   const filtered = useMemo(() => {
@@ -106,7 +112,14 @@ export default function OurMenuView() {
         {!qLower && (
           <>
             {SHOP_CATEGORIES.map(({ id, label }) => {
-              const items = menu.filter((m) => m.category === id).slice(0, 4);
+              const items = menu
+                .filter(
+                  (m) =>
+                    String(m.category ?? "other")
+                      .trim()
+                      .toLowerCase() === id
+                )
+                .slice(0, 4);
               if (items.length === 0) return null;
               return (
                 <section key={id} className="mb-14">
