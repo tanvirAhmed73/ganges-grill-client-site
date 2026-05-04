@@ -57,6 +57,16 @@ export function removeDemoCartLine(email: string, lineId: string): DemoCartLine[
   return lines;
 }
 
+/** Clear all local demo lines after a successful checkout (demo UX). */
+export function clearDemoCart(email: string | undefined) {
+  if (typeof window === "undefined" || !email) return;
+  try {
+    localStorage.removeItem(key(email));
+  } catch {
+    // ignore
+  }
+}
+
 export function isDemoFoodId(id: string | undefined) {
   return typeof id === "string" && id.startsWith("gg-demo-");
 }

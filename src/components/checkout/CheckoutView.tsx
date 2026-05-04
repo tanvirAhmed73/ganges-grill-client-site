@@ -1,14 +1,20 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import Swal from "sweetalert2";
+import { clearDemoCart } from "@/lib/cart/demo-cart-storage";
 import useAuth from "@/hooks/useAuth";
 import useCart from "@/hooks/useCart";
 import { useAuthModal } from "@/contexts/auth-modal-context";
+import {
+  generateOrderNumber,
+  saveOrderConfirmation,
+} from "@/lib/orders/confirmation-storage";
 
 export default function CheckoutView() {
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const router = useRouter();
   const { openAuthModal } = useAuthModal();
@@ -25,6 +31,7 @@ export default function CheckoutView() {
   const [notes, setNotes] = useState("");
   const [payment, setPayment] = useState<"cash" | "card">("cash");
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const fmt = (n: number) =>
     new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(
@@ -33,25 +40,40 @@ export default function CheckoutView() {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setFormError(null);
     if (!address.trim() || !city.trim() || !phone.trim()) {
-      Swal.fire({
-        icon: "warning",
-        title: "Missing details",
-        text: "Please fill in delivery address, city, and phone.",
-      });
+      setFormError("Please fill in delivery address, city, and phone.");
       return;
     }
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setSubmitting(false);
-    Swal.fire({
-      icon: "success",
-      title: "Order placed",
-      html: `<p class="text-sm text-neutral-600">This is a demo flow. Connect checkout to your backend order API when ready.</p>`,
-      confirmButtonColor: "#FF6B35",
-    }).then(() => {
-      router.push("/orders?demo=1");
+    await new Promise((r) => setTimeout(r, 650));
+
+    const etaMin = 28 + Math.floor(Math.random() * 8);
+    const etaMax = etaMin + 8 + Math.floor(Math.random() * 12);
+
+    saveOrderConfirmation({
+      orderNumber: generateOrderNumber(),
+      placedAt: new Date().toISOString(),
+      etaMin,
+      etaMax,
+      addressLine: address.trim(),
+      city: city.trim(),
+      phone: phone.trim(),
+      notes: notes.trim(),
+      payment,
+      total,
+      items: rows.map((row: { _id: string; name: string; price: number }) => ({
+        _id: String(row._id),
+        name: row.name,
+        price: Number(row.price) || 0,
+      })),
     });
+
+    clearDemoCart(user.email);
+    await queryClient.invalidateQueries({ queryKey: ["cart", user.email] });
+
+    setSubmitting(false);
+    router.push("/checkout/success");
   };
 
   if (!user?.email) {
@@ -93,8 +115,18 @@ export default function CheckoutView() {
         Checkout
       </h1>
       <p className="mt-1 text-sm text-brand-muted">
-        Delivery details and payment method — demo confirmation only until the order API is connected.
+        Delivery details and payment method — after you place your order you&apos;ll see a
+        Foodpanda-style confirmation with order number and status.
       </p>
+
+      {formError ? (
+        <div
+          className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+          role="alert"
+        >
+          {formError}
+        </div>
+      ) : null}
 
       <div className="mt-10 grid gap-10 lg:grid-cols-5 lg:gap-12">
         <form
