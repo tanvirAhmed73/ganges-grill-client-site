@@ -3,8 +3,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { clearDemoCart } from "@/lib/cart/demo-cart-storage";
+import { useDeliveryAddress } from "@/contexts/delivery-address-context";
 import useAuth from "@/hooks/useAuth";
 import useCart from "@/hooks/useCart";
 import { useAuthModal } from "@/contexts/auth-modal-context";
@@ -18,6 +19,7 @@ export default function CheckoutView() {
   const { user } = useAuth();
   const router = useRouter();
   const { openAuthModal } = useAuthModal();
+  const { saved: deliverySaved, openAddressPicker } = useDeliveryAddress();
   const [cart] = useCart();
   const rows = cart ?? [];
   const total = rows.reduce(
@@ -32,6 +34,12 @@ export default function CheckoutView() {
   const [payment, setPayment] = useState<"cash" | "card">("cash");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!deliverySaved) return;
+    setAddress((a) => a.trim() || deliverySaved.detail);
+    setCity((c) => c.trim() || deliverySaved.area);
+  }, [deliverySaved]);
 
   const fmt = (n: number) =>
     new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(
@@ -135,7 +143,16 @@ export default function CheckoutView() {
           className="space-y-5 lg:col-span-3"
         >
           <section className="rounded-2xl border border-black/[0.06] bg-white p-5 shadow-sm ring-1 ring-black/[0.03] sm:p-6">
-            <h2 className="text-lg font-bold text-brand-dark">Delivery</h2>
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <h2 className="text-lg font-bold text-brand-dark">Delivery</h2>
+              <button
+                type="button"
+                onClick={() => openAddressPicker()}
+                className="text-sm font-semibold text-brand-primary hover:underline"
+              >
+                Pick on map
+              </button>
+            </div>
             <div className="mt-4 space-y-4">
               <label className="block text-sm font-medium text-brand-dark">
                 Address line

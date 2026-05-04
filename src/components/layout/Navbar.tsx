@@ -26,6 +26,7 @@ import Swal from "sweetalert2";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 import AccountMenuLinks from "@/components/layout/AccountMenuLinks";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
+import { useDeliveryAddress } from "@/contexts/delivery-address-context";
 import useAuth from "@/hooks/useAuth";
 import useCart from "@/hooks/useCart";
 
@@ -67,6 +68,7 @@ export default function Navbar() {
   const { user, logOut } = useAuth();
   const { openAuthModal } = useAuthModal();
   const [cart] = useCart();
+  const { saved: deliveryAddress, openAddressPicker, pickerOpen } = useDeliveryAddress();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -163,21 +165,24 @@ export default function Navbar() {
 
             <button
               type="button"
+              onClick={() => openAddressPicker()}
               className="mx-auto hidden min-w-0 max-w-md flex-1 items-start gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-brand-secondary/35 md:flex lg:mx-0 lg:max-w-xl"
               aria-haspopup="dialog"
+              aria-expanded={pickerOpen}
               aria-label={t("nav.chooseDeliveryAddress")}
             >
               <MdOutlineLocationOn
                 className="mt-0.5 shrink-0 text-xl text-brand-primary"
                 aria-hidden
               />
-              <span className="text-sm leading-tight">
-                <span className="font-semibold text-brand-dark">
-                  {t("nav.newAddress")}
+              <span className="min-w-0 text-sm leading-tight">
+                <span className="block truncate font-semibold text-brand-dark">
+                  {deliveryAddress ? deliveryAddress.label : t("nav.newAddress")}
                 </span>
-                <span className="text-brand-muted">
-                  {" "}
-                  · {t("nav.selectYourAddress")}
+                <span className="block truncate text-brand-muted">
+                  {deliveryAddress
+                    ? `${deliveryAddress.area} · ${t("addressPicker.changeHint")}`
+                    : `· ${t("nav.selectYourAddress")}`}
                 </span>
               </span>
             </button>
@@ -186,11 +191,19 @@ export default function Navbar() {
           {/* Mobile: compact address teaser */}
           <button
             type="button"
+            onClick={() => openAddressPicker()}
             className="-mt-0.5 flex w-full min-w-0 items-center gap-2 rounded-lg px-1 py-2 text-left touch-manipulation md:hidden"
           >
             <MdOutlineLocationOn className="shrink-0 text-brand-primary" />
-            <span className="truncate text-xs text-brand-muted">
-              {t("nav.selectYourAddress")}
+            <span className="min-w-0 truncate text-xs">
+              {deliveryAddress ? (
+                <>
+                  <span className="font-semibold text-brand-dark">{deliveryAddress.label}</span>
+                  <span className="text-brand-muted"> · {deliveryAddress.area}</span>
+                </>
+              ) : (
+                <span className="text-brand-muted">{t("nav.selectYourAddress")}</span>
+              )}
             </span>
           </button>
 

@@ -11,6 +11,7 @@ import { LocaleProvider } from "@/contexts/locale-context";
 import AuthProvider from "@/providers/AuthProvider";
 import AxiosSecureSetup from "@/providers/AxiosSecureSetup";
 import { WishlistProvider } from "@/contexts/wishlist-context";
+import { DeliveryAddressProvider } from "@/contexts/delivery-address-context";
 
 export default function AppProviders({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -18,18 +19,20 @@ export default function AppProviders({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <LocaleProvider>
-        <AuthProvider>
-          <WishlistProvider>
-            <AuthModalProvider>
-              <AxiosSecureSetup />
-              {/* Anonymous-only promo; must stay inside AuthProvider */}
-              <TopPromoBanner />
-              <AuthEntryModal />
-              <PendingVerificationGate />
-              {children}
-            </AuthModalProvider>
-          </WishlistProvider>
-        </AuthProvider>
+        <DeliveryAddressProvider>
+          <AuthProvider>
+            <WishlistProvider>
+              <AuthModalProvider>
+                <AxiosSecureSetup />
+                {/* Anonymous-only promo; must stay inside AuthProvider */}
+                <TopPromoBanner />
+                <AuthEntryModal />
+                <PendingVerificationGate />
+                {children}
+              </AuthModalProvider>
+            </WishlistProvider>
+          </AuthProvider>
+        </DeliveryAddressProvider>
       </LocaleProvider>
     </QueryClientProvider>
   );

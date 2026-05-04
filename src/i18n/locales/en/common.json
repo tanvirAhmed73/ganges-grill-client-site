@@ -40,6 +40,19 @@
     "helpCenter": "Help Center",
     "vendorPortal": "Vendor portal"
   },
+  "addressPicker": {
+    "title": "Delivery address",
+    "dropPin": "Drop-off point",
+    "mapPreview": "Map preview",
+    "mapHint": "Mount Google Maps JavaScript API here when your key is ready.",
+    "searchPlaceholder": "Search street, area, or landmark",
+    "noResults": "No matches — try “Gulshan”, “Banani”, or “Dhanmondi”.",
+    "selected": "Selected",
+    "pickPrompt": "Choose an address from the list, then tap confirm.",
+    "confirm": "Use this address",
+    "demoNote": "Demo suggestions only. Google Places will power search next.",
+    "changeHint": "Tap to change"
+  },
   "footer": {
     "tagline": "Order from your favorite local restaurants with curated deals, fast delivery, and reliable service across Dhaka.",
     "address": "Gulshan Avenue, Dhaka, Bangladesh",

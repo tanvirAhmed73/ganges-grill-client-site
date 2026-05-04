@@ -3,6 +3,7 @@
 import { Suspense, type ReactNode } from "react";
 import CartFloatingBar from "@/components/layout/CartFloatingBar";
 import Footer from "@/components/layout/Footer";
+import AddressPickerModal from "@/components/address/AddressPickerModal";
 import Navbar from "@/components/layout/Navbar";
 import SiteMainPadding from "@/components/layout/SiteMainPadding";
 import BurgerEatingLoader from "@/components/ui/BurgerEatingLoader";
@@ -29,6 +30,7 @@ export default function SiteShell({ children }: { children: ReactNode }) {
       <Suspense fallback={<NavbarFallback />}>
         <Navbar />
       </Suspense>
+      <AddressPickerModal />
       <SiteMainPadding>
         {children}
         <Footer />
