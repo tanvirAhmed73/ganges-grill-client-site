@@ -20,9 +20,9 @@ export default function Footer() {
       title: t("footer.discover"),
       links: [
         { label: t("footer.home"), href: "/" },
-        { label: t("footer.allRestaurants"), href: "/" },
+        { label: t("footer.allRestaurants"), href: "/restaurants" },
         { label: t("footer.ourMenu"), href: "/ourMenu" },
-        { label: t("footer.popularDeals"), href: "/" },
+        { label: t("footer.popularDeals"), href: "/deals" },
       ],
     },
     {
@@ -30,14 +30,14 @@ export default function Footer() {
       links: [
         { label: t("footer.aboutUs"), href: "/about" },
         { label: t("footer.contact"), href: "/contact" },
-        { label: t("footer.careers"), href: "/contact" },
-        { label: t("footer.partnerWithUs"), href: "/contact" },
+        { label: t("footer.careers"), href: "/careers" },
+        { label: t("footer.partnerWithUs"), href: "/partner" },
       ],
     },
     {
       title: t("footer.support"),
       links: [
-        { label: t("footer.helpCenter"), href: "/contact" },
+        { label: t("footer.helpCenter"), href: "/help" },
         { label: t("footer.termsConditions"), href: "/termsAndCondition" },
         { label: t("footer.privacyPolicy"), href: "/privacyPolicy" },
         { label: t("footer.refundPolicy"), href: "/refundPolicy" },
