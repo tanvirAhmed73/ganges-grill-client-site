@@ -1,10 +1,10 @@
-import { axiosPublic } from "@/lib/api/axios-public";
+import { axiosPublic } from "../api/axios-public";
 import {
   getAccessToken,
   getRefreshToken,
   persistTokensFromResponse,
   clearTokens,
-} from "@/lib/auth/tokens";
+} from "./tokens";
 
 let inFlight: Promise<boolean> | null = null;
 
@@ -28,4 +28,9 @@ export function refreshAccessToken(): Promise<boolean> {
     }
   })();
   return inFlight;
+}
+
+/** Clears the in-flight mutex (e.g. Jest cases that run refresh back-to-back). */
+export function resetRefreshAccessInFlight(): void {
+  inFlight = null;
 }
